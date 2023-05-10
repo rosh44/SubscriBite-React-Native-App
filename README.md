@@ -9,6 +9,7 @@ npx expo start
 
 
 Following changes are completed:
+
 Login 
 Registration
 User details page
