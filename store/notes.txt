@@ -1,0 +1,6 @@
+This acts like redux storeage. 
+Its a central place from where anywhere in your app can access certain information.
+
+Store --> takes some values, and the AuthContextProvider is then exported.
+When this is wrapped around any pages or elements, the underlying elements are able to access information 
+from the react store. 
