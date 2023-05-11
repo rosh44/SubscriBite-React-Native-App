@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext, useState } from 'react';
 
 export const AuthContext = createContext({
@@ -17,9 +18,13 @@ function AuthContextProvider({ children }) {
   const [localId, setLocalId] = useState();
   const [name, setName] = useState();
   const [isRegistered, setIsRegistered] = useState(false);
+
   function authenticate({ token, localId }) {
+    console.log(`Token being set while authenticate: ${token}, ${localId}`);
     setAuthToken(token);
     setLocalId(localId);
+    AsyncStorage.setItem('token', token); // key-> value, ensure both in string format
+    AsyncStorage.setItem('localId', localId); // key-> value, ensure both in string format
   }
 
   function setUserDetails(name) {
