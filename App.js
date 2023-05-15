@@ -63,14 +63,6 @@ const BottomTabNavigation = () => {
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name='account' color={color} size={size} />
           ),
-          // headerRight: ({ tintColor }) => {
-          //   <IconButton
-          //     icon='exit'
-          //     color={tintColor}
-          //     size={24}
-          //     onPress={authCtx.logout()}
-          //   />;
-          // },
         }}
       />
     </BottomTab.Navigator>
