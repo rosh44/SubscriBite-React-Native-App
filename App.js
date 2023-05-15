@@ -14,11 +14,13 @@ import { Colors } from './constants/styles';
 import AuthContextProvider, { AuthContext } from './store/auth-context';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import IconButton from './components/ui/IconButton';
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
 
 const BottomTabNavigation = () => {
+  const authCtx = useContext(AuthContext);
   return (
     <BottomTab.Navigator
       screenOptions={{
@@ -26,6 +28,14 @@ const BottomTabNavigation = () => {
         headerTintColor: 'white',
         tabBarStyle: { backgroundColor: Colors.primary500 },
         tabBarInactiveTintColor: 'white',
+        headerRight: ({ tintColor }) => (
+          <IconButton
+            icon='exit'
+            color={tintColor}
+            size={24}
+            onPress={authCtx.logout}
+          />
+        ),
       }}
     >
       <BottomTab.Screen
@@ -53,6 +63,14 @@ const BottomTabNavigation = () => {
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name='account' color={color} size={size} />
           ),
+          // headerRight: ({ tintColor }) => {
+          //   <IconButton
+          //     icon='exit'
+          //     color={tintColor}
+          //     size={24}
+          //     onPress={authCtx.logout()}
+          //   />;
+          // },
         }}
       />
     </BottomTab.Navigator>
@@ -94,6 +112,24 @@ function AuthenticatedStack() {
   // we do not need to show login screens and all once this is done
   // you only render this Navigator if a certain condition is met (ie logged in user)
   const authCtx = useContext(AuthContext);
+  useEffect(() => {
+    // console.log('Am in use Effect');
+
+    async function fetchRegistered() {
+      const isRegistered = await AsyncStorage.getItem('registered');
+
+      if (isRegistered) {
+        // that means token is on device, hence user is already logged in
+        // so set the auth context
+        // console.log(`Token is stored as ${storedToken}`);
+        // console.log(`ID is stored as ${localId}`);
+
+        authCtx.setRegisteredUser(true);
+      }
+    }
+
+    fetchRegistered();
+  }, []);
 
   return (
     <Stack.Navigator
@@ -104,7 +140,20 @@ function AuthenticatedStack() {
       }}
     >
       {!authCtx.isRegistered ? (
-        <Stack.Screen name='UserDetail' component={UserDetailScreen} />
+        <Stack.Screen
+          name='UserDetail'
+          component={UserDetailScreen}
+          // options={{
+          //   headerRight: ({ tintColor }) => {
+          //     <IconButton
+          //       icon='exit'
+          //       color={tintColor}
+          //       size={24}
+          //       onPress={authCtx.logout}
+          //     />;
+          //   },
+          // }}
+        />
       ) : (
         <Stack.Screen
           options={{ headerShown: false }}
@@ -133,7 +182,7 @@ function Root() {
   console.log('Am in root');
   const authCtx = useContext(AuthContext);
   useEffect(() => {
-    console.log('Am in use Effect');
+    // console.log('Am in use Effect');
 
     async function fetchToken() {
       const storedToken = await AsyncStorage.getItem('token');
@@ -142,8 +191,8 @@ function Root() {
       if (storedToken) {
         // that means token is on device, hence user is already logged in
         // so set the auth context
-        console.log(`Token is stored as ${storedToken}`);
-        console.log(`ID is stored as ${localId}`);
+        // console.log(`Token is stored as ${storedToken}`);
+        // console.log(`ID is stored as ${localId}`);
 
         authCtx.authenticate({ token: storedToken, localId });
       }

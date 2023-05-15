@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { AuthContext } from '../store/auth-context';
 import { useContext } from 'react';
+import IconButton from '../components/ui/IconButton';
 
 function HomeScreen() {
   const authCtx = useContext(AuthContext);
@@ -14,7 +15,6 @@ function HomeScreen() {
         of contexts on the UI store.
       </Text>
     </View>
-  
   );
 }
 

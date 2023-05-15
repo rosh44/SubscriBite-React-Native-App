@@ -33,11 +33,15 @@ function AuthContextProvider({ children }) {
   }
   function setRegisteredUser(registered) {
     console.log(`User registration status: ${registered}`);
-
     setIsRegistered(registered);
+    AsyncStorage.setItem('registered', 'True');
   }
   function logout() {
+    console.log('Logging user out...');
     setAuthToken(null);
+    setLocalId(null);
+    AsyncStorage.removeItem('token');
+    AsyncStorage.removeItem('localId');
   }
 
   //now a value object that is supposed to tie the store values to these apparently
