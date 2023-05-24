@@ -44,8 +44,8 @@ function AuthContextProvider({ children }) {
     AsyncStorage.removeItem('localId');
   }
 
-  //now a value object that is supposed to tie the store values to these apparently
-  const value = {
+//this object's keys should match what was created using useContext, because that thing^M
+// that was created will take this object as its "value"
     token: authToken,
     localId: localId,
     name: name,
