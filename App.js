@@ -12,6 +12,7 @@ import CalendarScreen from './screens/CalendarScreen';
 import AccountScreen from './screens/AccountScreen';
 import { Colors } from './constants/styles';
 import AuthContextProvider, { AuthContext } from './store/auth-context';
+import CartContextProvider, { CartContext } from './store/cart-context';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import IconButton from './components/ui/IconButton';
@@ -201,7 +202,9 @@ export default function App() {
     <>
       <StatusBar style='light' />
       <AuthContextProvider>
-        <Root />
+        <CartContextProvider>
+          <Root />
+        </CartContextProvider>
       </AuthContextProvider>
     </>
   );
