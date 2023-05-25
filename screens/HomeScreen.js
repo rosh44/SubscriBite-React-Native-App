@@ -17,8 +17,8 @@ function HomeScreen() {
   const [filteredItems, setFilteredItems] = useState(dummyItemsList);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
-  const [fromDate, setFromDate] = useState('2023-05-18');
-  const [toDate, setToDate] = useState('2023-11-18');
+  const [fromDate, setFromDate] = useState('2023-05-24');
+  const [toDate, setToDate] = useState('2023-11-24');
   const [quantity, setQuantity] = useState(1);
   const [frequency, setFrequency] = useState('1');
   const [timeslot, setTimeslot] = useState(1);
@@ -65,8 +65,8 @@ function HomeScreen() {
 
   async function handleConfirm() {
     const add_subscription_request = {
-      user_id: 2,
-      item_id: 25,
+      user_id: 163,
+      item_id: selectedItem.id,
       sub_start_date: fromDate,
       sub_end_date: toDate,
       freq: parseInt(frequency),
@@ -87,7 +87,7 @@ function HomeScreen() {
       console.log(`Current Subscriptions: ${cartCtx.subscriptions}`);
 
       const store_subscription = {
-        user_id: 2,
+        user_id: 163,
         item_id: selectedItem.id,
         frequency: parseInt(frequency),
         quantity: quantity,

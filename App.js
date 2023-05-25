@@ -51,6 +51,10 @@ const BottomTabNavigation = () => {
       <BottomTab.Screen
         name='Subscriptions'
         component={CalendarScreen}
+        initialParams={{
+          api: 'http://dev-lb-subscribite-234585004.us-west-2.elb.amazonaws.com',
+          userId: 163,
+        }}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Ionicons name='calendar' color={color} size={size} />

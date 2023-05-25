@@ -102,8 +102,8 @@ export default AddItemModal;
 const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
-    // justifyContent: 'center',
-    // alignItems: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     position: 'absolute',
     top: '20%',
@@ -112,9 +112,12 @@ const styles = StyleSheet.create({
     right: '20%',
   },
   modalContent: {
-    backgroundColor: 'white',
+    // backgroundColor: 'white',
     padding: 20,
     borderRadius: 8,
+    height: '80%',
+    width: '80%',
+    // backgroundColor: '#fff',
   },
   quantityContainer: {
     flexDirection: 'row',
@@ -139,6 +142,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 10,
     right: 10,
+    padding: 8,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    borderRadius: 20,
   },
   closeButtonText: {
     fontSize: 18,
