@@ -6,6 +6,7 @@ import {
   StyleSheet,
   TextInput,
 } from 'react-native';
+import { Colors } from '../constants/styles';
 
 import TimeSlotPicker from './TimeSlotPicker';
 
@@ -27,69 +28,69 @@ function AddItemModal({
   handleConfirm,
 }) {
   const totalCost = selectedItem ? selectedItem.price * quantity : 0;
-
   return (
-    <Modal visible={modalVisible} animationType='fade'>
-      <View style={styles.modalContainer}>
-        <View style={styles.modalContent}>
-          <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
-            <Text style={styles.closeButtonText}>X</Text>
+    <Modal visible={modalVisible} transparent={true} animationType='slide'>
+      <View style={styles.modalContent}>
+        <View style={styles.quantityContainer}>
+          <Text style={styles.inputLabel}>Quantity:</Text>
+
+          <TouchableOpacity
+            onPress={decrementQuantity}
+            style={styles.quantityButton}
+          >
+            <Text>-</Text>
           </TouchableOpacity>
-          <Text>Quantity:</Text>
-          <View style={styles.quantityContainer}>
-            <TouchableOpacity
-              onPress={decrementQuantity}
-              style={styles.quantityButton}
-            >
-              <Text>-</Text>
-            </TouchableOpacity>
-            <Text>{quantity}</Text>
-            <TouchableOpacity
-              onPress={incrementQuantity}
-              style={styles.quantityButton}
-            >
-              <Text>+</Text>
-            </TouchableOpacity>
-          </View>
+          <Text>{quantity}</Text>
+          <TouchableOpacity
+            onPress={incrementQuantity}
+            style={styles.quantityButton}
+          >
+            <Text>+</Text>
+          </TouchableOpacity>
+        </View>
 
-          <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>From:</Text>
-            <TextInput
-              style={styles.textInput}
-              value={fromDate}
-              onChangeText={setFromDate}
-            ></TextInput>
-          </View>
-          <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>To:</Text>
-            <TextInput
-              style={styles.textInput}
-              value={toDate}
-              onChangeText={setToDate}
-            ></TextInput>
-          </View>
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputLabel}>From:</Text>
+          <TextInput
+            style={styles.textInput}
+            value={fromDate}
+            onChangeText={setFromDate}
+          ></TextInput>
+        </View>
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputLabel}>To:</Text>
+          <TextInput
+            style={styles.textInput}
+            value={toDate}
+            onChangeText={setToDate}
+          ></TextInput>
+        </View>
 
-          <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>Frequency (days):</Text>
-            <TextInput
-              style={styles.textInput}
-              value={frequency}
-              onChangeText={setFrequency}
-              keyboardType='numeric'
-            ></TextInput>
-          </View>
-          <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>Timeslot</Text>
-            <TimeSlotPicker timeslot={timeslot} setTimeslot={setTimeslot} />
-          </View>
-          <Text style={styles.inputLabel}>
-            Total Cost: ${totalCost.toFixed(2)}
-          </Text>
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputLabel}>Frequency (days):</Text>
+          <TextInput
+            style={styles.textInput}
+            value={frequency}
+            onChangeText={setFrequency}
+            keyboardType='numeric'
+          ></TextInput>
+        </View>
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputLabel}>Timeslot: </Text>
+          <TimeSlotPicker timeslot={timeslot} setTimeslot={setTimeslot} />
+        </View>
+        <Text style={styles.inputLabel}>
+          Total Cost: ${totalCost.toFixed(2)}
+        </Text>
+        <View style={styles.inputContainer}>
           <TouchableOpacity
             onPress={handleConfirm}
             style={styles.confirmButton}
           >
             <Text style={styles.confirmButtonText}>Confirm?</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
+            <Text style={styles.confirmButtonText}>Close</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -100,29 +101,23 @@ function AddItemModal({
 export default AddItemModal;
 
 const styles = StyleSheet.create({
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    position: 'absolute',
-    top: '20%',
-    bottom: '20%',
-    left: '20%',
-    right: '20%',
-  },
   modalContent: {
     // backgroundColor: 'white',
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    // alignItems: 'center',
+    height: '40%',
+    backgroundColor: Colors.primary100,
+    borderWidth: 5,
+    // marginTop: '35%',
+    // marginBottom: '35%',
     padding: 20,
-    borderRadius: 8,
-    height: '80%',
-    width: '80%',
-    // backgroundColor: '#fff',
   },
   quantityContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     marginTop: 10,
     marginBottom: 20,
   },
@@ -138,14 +133,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
   },
-  closeButton: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    padding: 8,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    borderRadius: 20,
-  },
+
   closeButtonText: {
     fontSize: 18,
     color: 'gray',
@@ -167,9 +155,31 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     alignItems: 'center',
+    margin: 10,
+  },
+  closeButton: {
+    backgroundColor: 'red',
+    borderRadius: 5,
+    padding: 10,
+    alignItems: 'center',
+    margin: 10,
   },
   confirmButtonText: {
     color: 'white',
     fontSize: 16,
   },
+  buttonRow: {
+    flex: 1,
+    alignItems: 'space-around',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    borderColor: 'red',
+    borderRadius: 8,
+  },
+  // inputContainer: {
+  //   flex: 1,
+  //   flexDirection: 'row',
+  //   justifyContent: 'center',
+  //   alignItems: 'space-around',
+  // },
 });
