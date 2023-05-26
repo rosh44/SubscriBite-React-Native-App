@@ -1,4 +1,4 @@
-import { View } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { AuthContext } from '../store/auth-context';
 import { CartContext } from '../store/cart-context';
 import { useState, useContext } from 'react';
@@ -8,6 +8,7 @@ import dummyItemsList from './dummyItemsList';
 import SearchBar from '../components/SearchBar';
 import ItemList from '../components/ItemList';
 import AddItemModal from '../components/AddItemModal';
+import FilterBar from '../components/FilterBar';
 
 function HomeScreen() {
   const authCtx = useContext(AuthContext);
@@ -22,7 +23,30 @@ function HomeScreen() {
   const [quantity, setQuantity] = useState(1);
   const [frequency, setFrequency] = useState('1');
   const [timeslot, setTimeslot] = useState(1);
+  const [selectedFilter, setSelectedFilter] = useState('');
 
+  const filterItemsFromCategory = (text) => {
+    const filtered = dummyItemsList.filter(
+      (item) =>
+        item.name.toLocaleLowerCase().includes(text.toLocaleLowerCase()) ||
+        item.attributes.some((attribute) =>
+          attribute.toLocaleLowerCase().includes(text.toLocaleLowerCase())
+        )
+    );
+    setFilteredItems([...filtered]);
+  };
+
+  const handleCategoryPress = (category) => {
+    // if the category is already selected, remove it from the selection
+    if (category === selectedFilter) {
+      setSelectedFilter('');
+      filterItemsFromCategory('');
+    } else {
+      setSelectedFilter(category);
+      filterItemsFromCategory(category);
+      setSearchText('');
+    }
+  };
   const filterItems = (text) => {
     const filtered = dummyItemsList.filter(
       (item) =>
@@ -31,7 +55,7 @@ function HomeScreen() {
           attribute.toLocaleLowerCase().includes(text.toLocaleLowerCase())
         )
     );
-    setFilteredItems(filtered);
+    setFilteredItems([...filtered]);
   };
 
   const handleSearchTextChange = (text) => {
@@ -119,6 +143,12 @@ function HomeScreen() {
         searchText={searchText}
         handleSearchTextChange={handleSearchTextChange}
       />
+
+      <FilterBar
+        handleCategoryPress={handleCategoryPress}
+        selectedFilter={selectedFilter}
+      />
+
       <ItemList
         handleItemPress={handleItemPress}
         filteredItems={filteredItems}
