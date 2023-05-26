@@ -5,6 +5,7 @@ import {
   Modal,
   StyleSheet,
   TextInput,
+  BackHandler,
 } from 'react-native';
 import { Colors } from '../constants/styles';
 
