@@ -16,6 +16,9 @@ import CartContextProvider, { CartContext } from './store/cart-context';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import IconButton from './components/ui/IconButton';
+import * as SplashScreen from 'expo-splash-screen';
+
+SplashScreen.preventAutoHideAsync();
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -167,6 +170,7 @@ function AuthenticatedStack() {
 function Navigation() {
   // now we can use useContext() to tap into the context part
   const authCtx = useContext(AuthContext);
+
   return (
     <NavigationContainer>
       {!authCtx.isAuthenticated && <AuthStack />}
@@ -177,7 +181,9 @@ function Navigation() {
 
 function Root() {
   console.log('Am in root');
+  const [isTryingLogin, setIsTryingLogin] = useState(true); // at first we are always logging in
   const authCtx = useContext(AuthContext);
+
   useEffect(() => {
     // console.log('Am in use Effect');
 
@@ -192,22 +198,25 @@ function Root() {
         // console.log(`ID is stored as ${localId}`);
 
         authCtx.authenticate({ token: storedToken, localId });
+        setIsTryingLogin(false); // whether logged in or not, we are done trying to check if login
       }
     }
 
     fetchToken();
   }, []);
+
   return <Navigation />;
 }
 
 export default function App() {
   // we move the authcontextprovider stuff into this container
+
   return (
     <>
       <StatusBar style='light' />
       <AuthContextProvider>
         <CartContextProvider>
-          <Root />
+          <Root> </Root>
         </CartContextProvider>
       </AuthContextProvider>
     </>

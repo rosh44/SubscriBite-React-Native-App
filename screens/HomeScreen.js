@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { AuthContext } from '../store/auth-context';
 import { CartContext } from '../store/cart-context';
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import dummyItemsList from './dummyItemsList';
 
@@ -9,6 +9,7 @@ import SearchBar from '../components/SearchBar';
 import ItemList from '../components/ItemList';
 import AddItemModal from '../components/AddItemModal';
 import FilterBar from '../components/FilterBar';
+import * as SplashScreen from 'expo-splash-screen';
 
 function HomeScreen() {
   const authCtx = useContext(AuthContext);
@@ -24,11 +25,7 @@ function HomeScreen() {
   const [filteredItems, setFilteredItems] = useState(dummyItemsList);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
-  // const formattedDate = date.toLocaleDateString('en-US', {
-  //   month: 'long',
-  //   day: 'numeric',
-  //   year: 'numeric',
-  // });
+
   const [fromDate, setFromDate] = useState(
     tomorrowDate.toISOString().slice(0, 10)
   );
@@ -152,9 +149,12 @@ function HomeScreen() {
     setTimeslot(1);
     setQuantity(1);
   }
+  const handleLayout = () => {
+    SplashScreen.hideAsync();
+  };
   const name = authCtx.name;
   return (
-    <View>
+    <View onLayout={handleLayout}>
       <SearchBar
         searchText={searchText}
         handleSearchTextChange={handleSearchTextChange}
@@ -193,17 +193,3 @@ function HomeScreen() {
 }
 
 export default HomeScreen;
-
-// const styles = StyleSheet.create({
-//   rootContainer: {
-//     flex: 1,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     padding: 32,
-//   },
-//   title: {
-//     fontSize: 20,
-//     fontWeight: 'bold',
-//     marginBottom: 8,
-//   },
-// });
