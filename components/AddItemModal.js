@@ -5,11 +5,11 @@ import {
   Modal,
   StyleSheet,
   TextInput,
-  BackHandler,
 } from 'react-native';
 import { Colors } from '../constants/styles';
 
 import TimeSlotPicker from './TimeSlotPicker';
+import { BlurView } from 'expo-blur';
 
 function AddItemModal({
   modalVisible,
@@ -30,72 +30,81 @@ function AddItemModal({
 }) {
   const totalCost = selectedItem ? selectedItem.price * quantity : 0;
   return (
-    <Modal visible={modalVisible} transparent={true} animationType='slide'>
-      <View style={styles.modalContent}>
-        <View style={styles.quantityContainer}>
-          <Text style={styles.inputLabel}>Quantity:</Text>
+    <>
+      {modalVisible && (
+        <BlurView intensity={100} tint='dark' style={StyleSheet.absoluteFill} />
+      )}
+      <Modal visible={modalVisible} transparent={true} animationType='slide'>
+        <View style={styles.modalContent}>
+          <View style={styles.quantityContainer}>
+            <Text style={styles.inputLabel}>Quantity:</Text>
+            <View style={styles.quantityButtonsContainer}>
+              <TouchableOpacity
+                onPress={decrementQuantity}
+                style={styles.quantityButton}
+              >
+                <Text style={styles.buttonText}>-</Text>
+              </TouchableOpacity>
+              <Text style={styles.quantity}>{quantity}</Text>
+              <TouchableOpacity
+                onPress={incrementQuantity}
+                style={styles.quantityButton}
+              >
+                <Text style={styles.buttonText}>+</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>From:</Text>
+            <TextInput
+              style={styles.textInput}
+              value={fromDate}
+              onChangeText={setFromDate}
+            ></TextInput>
+          </View>
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>To:</Text>
+            <TextInput
+              style={styles.textInput}
+              value={toDate}
+              onChangeText={setToDate}
+            ></TextInput>
+          </View>
 
-          <TouchableOpacity
-            onPress={decrementQuantity}
-            style={styles.quantityButton}
-          >
-            <Text>-</Text>
-          </TouchableOpacity>
-          <Text>{quantity}</Text>
-          <TouchableOpacity
-            onPress={incrementQuantity}
-            style={styles.quantityButton}
-          >
-            <Text>+</Text>
-          </TouchableOpacity>
-        </View>
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>Frequency (days):</Text>
+            <TextInput
+              style={styles.textInput}
+              value={frequency}
+              onChangeText={setFrequency}
+              keyboardType='numeric'
+            ></TextInput>
+          </View>
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>Timeslot: </Text>
+            <TimeSlotPicker timeslot={timeslot} setTimeslot={setTimeslot} />
+          </View>
 
-        <View style={styles.inputContainer}>
-          <Text style={styles.inputLabel}>From:</Text>
-          <TextInput
-            style={styles.textInput}
-            value={fromDate}
-            onChangeText={setFromDate}
-          ></TextInput>
-        </View>
-        <View style={styles.inputContainer}>
-          <Text style={styles.inputLabel}>To:</Text>
-          <TextInput
-            style={styles.textInput}
-            value={toDate}
-            onChangeText={setToDate}
-          ></TextInput>
-        </View>
+          <View style={styles.buttonContainer}>
+            <View style={styles.confirmContainer}>
+              <Text style={styles.confirmCostText}>
+                Total Cost: ${totalCost.toFixed(2)}
+              </Text>
+              <TouchableOpacity
+                onPress={handleConfirm}
+                style={styles.confirmButton}
+              >
+                <Text style={styles.confirmButtonText}>Confirm?</Text>
+              </TouchableOpacity>
+            </View>
 
-        <View style={styles.inputContainer}>
-          <Text style={styles.inputLabel}>Frequency (days):</Text>
-          <TextInput
-            style={styles.textInput}
-            value={frequency}
-            onChangeText={setFrequency}
-            keyboardType='numeric'
-          ></TextInput>
+            <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
+              <Text style={styles.confirmButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-        <View style={styles.inputContainer}>
-          <Text style={styles.inputLabel}>Timeslot: </Text>
-          <TimeSlotPicker timeslot={timeslot} setTimeslot={setTimeslot} />
-        </View>
-        <Text style={styles.inputLabel}>
-          Total Cost: ${totalCost.toFixed(2)}
-        </Text>
-        <View style={styles.inputContainer}>
-          <TouchableOpacity
-            onPress={handleConfirm}
-            style={styles.confirmButton}
-          >
-            <Text style={styles.confirmButtonText}>Confirm?</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
-            <Text style={styles.confirmButtonText}>Close</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </Modal>
+      </Modal>
+    </>
   );
 }
 
@@ -103,84 +112,100 @@ export default AddItemModal;
 
 const styles = StyleSheet.create({
   modalContent: {
-    // backgroundColor: 'white',
     flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    // alignItems: 'center',
-    height: '40%',
     backgroundColor: Colors.primary100,
-    borderWidth: 5,
-    // marginTop: '35%',
-    // marginBottom: '35%',
-    padding: 20,
+    padding: 16,
+    marginTop: '75%',
   },
   quantityContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-around',
-    marginTop: 10,
-    marginBottom: 20,
-  },
-  quantityButton: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: '#DDDDDD',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  confirmButtonText: {
-    color: 'white',
-    fontSize: 16,
-  },
-
-  closeButtonText: {
-    fontSize: 18,
-    color: 'gray',
+    marginBottom: 16,
   },
   inputLabel: {
+    fontSize: 16,
     fontWeight: 'bold',
-    marginBottom: 5,
+    marginRight: 8,
+  },
+  quantityButtonsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: 8,
+  },
+  quantityButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#E5E5E5',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 8,
+  },
+  buttonText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'black',
+  },
+  quantity: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  inputContainer: {
+    marginBottom: 16,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   textInput: {
     borderWidth: 1,
     borderColor: 'gray',
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    marginBottom: 10,
+    minWidth: '40%',
+    borderRadius: 8,
+    padding: 8,
+    fontSize: 16,
   },
   confirmButton: {
-    backgroundColor: 'blue',
-    borderRadius: 5,
-    padding: 10,
+    backgroundColor: Colors.primary800,
+    padding: 12,
+    borderRadius: 8,
     alignItems: 'center',
-    margin: 10,
-  },
-  closeButton: {
-    backgroundColor: 'red',
-    borderRadius: 5,
-    padding: 10,
-    alignItems: 'center',
-    margin: 10,
+    minWidth: 160,
   },
   confirmButtonText: {
     color: 'white',
     fontSize: 16,
+    fontWeight: 'bold',
   },
-  buttonRow: {
-    flex: 1,
-    alignItems: 'space-around',
-    justifyContent: 'center',
-    flexDirection: 'row',
-    borderColor: 'red',
+  closeButton: {
+    backgroundColor: Colors.error800,
+    padding: 12,
     borderRadius: 8,
+    alignItems: 'center',
+    minWidth: 160,
+    marginTop: 30,
   },
-  // inputContainer: {
-  //   flex: 1,
-  //   flexDirection: 'row',
-  //   justifyContent: 'center',
-  //   alignItems: 'space-around',
-  // },
+  buttonContainer: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
+  },
+  confirmContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 30,
+  },
+  confirmCostText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: Colors.primary800, // Blue color (you can adjust the color to your preference)
+    margin: 10,
+  },
+  absoluteFill: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
 });
