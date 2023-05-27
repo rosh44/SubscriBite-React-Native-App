@@ -14,12 +14,36 @@ function HomeScreen() {
   const authCtx = useContext(AuthContext);
   const cartCtx = useContext(CartContext);
 
+  const currentDate = new Date();
+  const tomorrowDate = new Date(currentDate);
+  const endDate = new Date(currentDate);
+  tomorrowDate.setDate(currentDate.getDate() + 1);
+  endDate.setDate(currentDate.getDate() + 365);
+
   const [searchText, setSearchText] = useState('');
   const [filteredItems, setFilteredItems] = useState(dummyItemsList);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
-  const [fromDate, setFromDate] = useState('2023-05-24');
-  const [toDate, setToDate] = useState('2023-11-24');
+  // const formattedDate = date.toLocaleDateString('en-US', {
+  //   month: 'long',
+  //   day: 'numeric',
+  //   year: 'numeric',
+  // });
+  const [fromDate, setFromDate] = useState(
+    tomorrowDate.toLocaleDateString('en-US', {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric',
+    })
+  );
+  const [toDate, setToDate] = useState(
+    endDate.toLocaleDateString('en-US', {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric',
+    })
+  );
+
   const [quantity, setQuantity] = useState(1);
   const [frequency, setFrequency] = useState('1');
   const [timeslot, setTimeslot] = useState(1);
@@ -97,7 +121,7 @@ function HomeScreen() {
       quantity: quantity,
       slot: timeslot,
     };
-    console.log(add_subscription_request);
+    console.log(`Sending request to backend: ${add_subscription_request}`);
     try {
       const response = await axios.post(
         'http://dev-lb-subscribite-234585004.us-west-2.elb.amazonaws.com/subscriptions/subscribe',
@@ -125,6 +149,7 @@ function HomeScreen() {
       // console.log(`Status: ${response.status}`);
       // now I will add it to react-store
     } catch (error) {
+      console.log(error);
     } finally {
       console.log('Finally');
     }
@@ -133,7 +158,7 @@ function HomeScreen() {
     setSelectedItem(null);
     setModalVisible(false);
     setFrequency('1');
-    setTimeslot();
+    setTimeslot(1);
     setQuantity(1);
   }
   const name = authCtx.name;
@@ -169,6 +194,8 @@ function HomeScreen() {
         setTimeslot={setTimeslot}
         selectedItem={selectedItem}
         handleConfirm={handleConfirm}
+        tomorrowDate={tomorrowDate}
+        endDate={endDate}
       />
     </View>
   );

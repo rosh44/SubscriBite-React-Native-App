@@ -22,7 +22,7 @@ export default TimeSlotPicker;
 
 const styles = StyleSheet.create({
   pickerContainer: {
-    minWidth: '40%',
+    minWidth: '50%',
     maxHeight: 50,
     borderWidth: 1,
     borderColor: 'gray',

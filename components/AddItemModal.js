@@ -1,14 +1,17 @@
 import {
   View,
   Text,
+  TouchableWithoutFeedback,
   TouchableOpacity,
   Modal,
   StyleSheet,
   TextInput,
 } from 'react-native';
+import { useState } from 'react';
 import { Colors } from '../constants/styles';
 
 import TimeSlotPicker from './TimeSlotPicker';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { BlurView } from 'expo-blur';
 
 function AddItemModal({
@@ -27,7 +30,42 @@ function AddItemModal({
   setTimeslot,
   selectedItem,
   handleConfirm,
+  tomorrowDate,
+  endDate,
 }) {
+  const [isDatePickerVisible, setDatePickerVisible] = useState(false);
+  const [selectedDateField, setSelectedDateField] = useState(null);
+  const [firstDate, setFirstDate] = useState(tomorrowDate);
+  const [secondDate, setSecondDate] = useState(endDate);
+
+  const showDatePicker = (dateField) => {
+    console.log('Pressed');
+    if (dateField === 'fromDate') {
+      setSelectedDateField('fromDate');
+    } else {
+      setSelectedDateField('toDate');
+    }
+    setDatePickerVisible(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisible(false);
+    console.log('Hid date picker');
+  };
+
+  const handleConfirmDate = (date) => {
+    if (selectedDateField === 'fromDate') {
+      setFromDate(date.toISOString().slice(0, 10));
+      setFirstDate(date);
+      setSecondDate(date); // change to max of both dates
+    } else {
+      setToDate(date.toISOString().slice(0, 10));
+      setSecondDate(date);
+    }
+    console.log(fromDate, toDate);
+    hideDatePicker();
+  };
+
   const totalCost = selectedItem ? selectedItem.price * quantity : 0;
   return (
     <>
@@ -56,19 +94,58 @@ function AddItemModal({
           </View>
           <View style={styles.inputContainer}>
             <Text style={styles.inputLabel}>From:</Text>
-            <TextInput
+            <TouchableWithoutFeedback
+              onPress={() => showDatePicker('fromDate')}
+            >
+              <View>
+                <TextInput
+                  style={styles.textInput}
+                  value={firstDate.toLocaleDateString('en-US', {
+                    month: 'long',
+                    day: 'numeric',
+                    year: 'numeric',
+                  })}
+                  editable={false}
+                />
+              </View>
+            </TouchableWithoutFeedback>
+
+            {/* <TextInput
               style={styles.textInput}
               value={fromDate}
               onChangeText={setFromDate}
-            ></TextInput>
+            ></TextInput> */}
+
+            <DateTimePickerModal
+              isVisible={isDatePickerVisible}
+              minimumDate={
+                selectedDateField === 'fromDate' ? tomorrowDate : firstDate
+              }
+              mode='date'
+              onConfirm={handleConfirmDate}
+              onCancel={hideDatePicker}
+            />
           </View>
           <View style={styles.inputContainer}>
             <Text style={styles.inputLabel}>To:</Text>
-            <TextInput
+            {/* <TextInput
               style={styles.textInput}
               value={toDate}
               onChangeText={setToDate}
-            ></TextInput>
+            ></TextInput> */}
+            <TouchableWithoutFeedback onPress={() => showDatePicker('toDate')}>
+              <View>
+                <TextInput
+                  style={styles.textInput}
+                  value={secondDate.toLocaleDateString('en-US', {
+                    month: 'long',
+                    day: 'numeric',
+                    year: 'numeric',
+                  })}
+                  editable={false}
+                />
+              </View>
+            </TouchableWithoutFeedback>
           </View>
 
           <View style={styles.inputContainer}>
@@ -159,7 +236,7 @@ const styles = StyleSheet.create({
   textInput: {
     borderWidth: 1,
     borderColor: 'gray',
-    minWidth: '40%',
+    minWidth: '50%',
     borderRadius: 8,
     padding: 8,
     fontSize: 16,
