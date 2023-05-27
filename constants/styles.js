@@ -4,4 +4,5 @@ export const Colors = {
   primary100: '#D8EDD9', // box colors
   error100: '#fff978',
   error500: '#ffffff',
+  error800: '#666666',
 };
