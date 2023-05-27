@@ -110,12 +110,6 @@ function AddItemModal({
               </View>
             </TouchableWithoutFeedback>
 
-            {/* <TextInput
-              style={styles.textInput}
-              value={fromDate}
-              onChangeText={setFromDate}
-            ></TextInput> */}
-
             <DateTimePickerModal
               isVisible={isDatePickerVisible}
               minimumDate={
@@ -128,11 +122,7 @@ function AddItemModal({
           </View>
           <View style={styles.inputContainer}>
             <Text style={styles.inputLabel}>To:</Text>
-            {/* <TextInput
-              style={styles.textInput}
-              value={toDate}
-              onChangeText={setToDate}
-            ></TextInput> */}
+
             <TouchableWithoutFeedback onPress={() => showDatePicker('toDate')}>
               <View>
                 <TextInput
@@ -240,6 +230,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 8,
     fontSize: 16,
+    color: 'black',
+    textAlign: 'center',
   },
   confirmButton: {
     backgroundColor: Colors.primary800,
