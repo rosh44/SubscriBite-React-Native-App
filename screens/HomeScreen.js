@@ -30,20 +30,9 @@ function HomeScreen() {
   //   year: 'numeric',
   // });
   const [fromDate, setFromDate] = useState(
-    tomorrowDate.toLocaleDateString('en-US', {
-      month: 'long',
-      day: 'numeric',
-      year: 'numeric',
-    })
+    tomorrowDate.toISOString().slice(0, 10)
   );
-  const [toDate, setToDate] = useState(
-    endDate.toLocaleDateString('en-US', {
-      month: 'long',
-      day: 'numeric',
-      year: 'numeric',
-    })
-  );
-
+  const [toDate, setToDate] = useState(endDate.toISOString().slice(0, 10));
   const [quantity, setQuantity] = useState(1);
   const [frequency, setFrequency] = useState('1');
   const [timeslot, setTimeslot] = useState(1);
@@ -121,6 +110,8 @@ function HomeScreen() {
       quantity: quantity,
       slot: timeslot,
     };
+    console.log(` ${fromDate} -- ${toDate}`);
+
     console.log(`Sending request to backend: ${add_subscription_request}`);
     try {
       const response = await axios.post(
