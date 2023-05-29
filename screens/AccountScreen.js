@@ -36,6 +36,11 @@ const accountOptions = [
   },
   {
 	  key: "7",
+	  text: "Suggest a product",
+    icon: "lightbulb-on-outline"
+  },
+  {
+	  key: "8",
 	  text: "Help / FAQ",
     icon: "help-circle-outline"
   }
