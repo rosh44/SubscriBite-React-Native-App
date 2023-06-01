@@ -21,19 +21,19 @@ function HomeScreen() {
   tomorrowDate.setDate(currentDate.getDate() + 1);
   endDate.setDate(currentDate.getDate() + 365);
 
-  const [searchText, setSearchText] = useState('');
-  const [filteredItems, setFilteredItems] = useState(dummyItemsList);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [searchText, setSearchText] = useState(''); // outside
+  const [filteredItems, setFilteredItems] = useState(dummyItemsList); // list
+  const [modalVisible, setModalVisible] = useState(false); // modal
+  const [selectedItem, setSelectedItem] = useState(null); // modal
 
   const [fromDate, setFromDate] = useState(
     tomorrowDate.toISOString().slice(0, 10)
-  );
-  const [toDate, setToDate] = useState(endDate.toISOString().slice(0, 10));
-  const [quantity, setQuantity] = useState(1);
-  const [frequency, setFrequency] = useState('1');
-  const [timeslot, setTimeslot] = useState(1);
-  const [selectedFilter, setSelectedFilter] = useState('');
+  ); // modal
+  const [toDate, setToDate] = useState(endDate.toISOString().slice(0, 10)); // modal
+  const [quantity, setQuantity] = useState(1); // modal
+  const [frequency, setFrequency] = useState('1'); // modal
+  const [timeslot, setTimeslot] = useState(1); // modal
+  const [selectedFilter, setSelectedFilter] = useState(''); // for outside
 
   const filterItemsFromCategory = (text) => {
     const filtered = dummyItemsList.filter(
@@ -44,7 +44,7 @@ function HomeScreen() {
         )
     );
     setFilteredItems([...filtered]);
-  };
+  }; // list
 
   const handleCategoryPress = (category) => {
     // if the category is already selected, remove it from the selection
@@ -56,7 +56,7 @@ function HomeScreen() {
       filterItemsFromCategory(category);
       setSearchText('');
     }
-  };
+  }; // list
   const filterItems = (text) => {
     const filtered = dummyItemsList.filter(
       (item) =>
@@ -66,36 +66,36 @@ function HomeScreen() {
         )
     );
     setFilteredItems([...filtered]);
-  };
+  }; // list
 
   const handleSearchTextChange = (text) => {
     setSearchText(text);
     filterItems(text);
-  };
+  }; // list
 
   const handleItemPress = (item) => {
     setSelectedItem(item);
     setModalVisible(true);
-  };
+  }; // list
 
   const incrementQuantity = () => {
     if (quantity < 5) {
       setQuantity(quantity + 1);
     }
-  };
+  }; // modal
 
   const decrementQuantity = () => {
     if (quantity > 1) {
       setQuantity(quantity - 1);
     }
-  };
+  }; // modal
   const closeModal = () => {
     setSelectedItem(null);
     setModalVisible(false);
     setFrequency('1');
     setTimeslot(1);
     setQuantity(1);
-  };
+  }; // modal
 
   async function handleConfirm() {
     const add_subscription_request = {
@@ -132,6 +132,7 @@ function HomeScreen() {
       console.log(`Subscription to be stored: ${store_subscription}`);
 
       cartCtx.addSubscription(store_subscription);
+      cartCtx.changeRefreshItem();
       console.log(`Current Subscriptions: ${cartCtx.subscriptions}`);
 
       // console.log(`Status: ${response.status}`);
@@ -148,7 +149,7 @@ function HomeScreen() {
     setFrequency('1');
     setTimeslot(1);
     setQuantity(1);
-  }
+  } // modal
   const handleLayout = () => {
     SplashScreen.hideAsync();
   };

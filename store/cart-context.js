@@ -8,6 +8,8 @@ export const CartContext = createContext({
   userId: '',
   subscriptions: [],
   addSubscription: () => {},
+  refreshItem: 0,
+  changeRefreshItem: () => {},
 });
 
 // this function returns a CartContext.Provider with the essential value props
@@ -17,11 +19,15 @@ export const CartContext = createContext({
 function CartContextProvider({ children }) {
   const [userId, setUserId] = useState();
   const [subscriptions, setSubscriptions] = useState([]);
-
+  const [refreshItem, setRefreshItem] = useState(0);
   useEffect(() => {
     console.log(`Updated subscriptions: ${JSON.stringify(subscriptions)}`);
   }, [subscriptions]);
 
+  function changeRefreshItem() {
+    setRefreshItem(refreshItem + 1);
+    console.log(`Inside store: ${refreshItem}`);
+  }
   function addSubscription(subscription) {
     const myObject = JSON.stringify(subscription);
     console.log(`Received subscription: ${myObject}`);
@@ -33,6 +39,8 @@ function CartContextProvider({ children }) {
     userId: userId,
     subscriptions: subscriptions,
     addSubscription: addSubscription,
+    refreshItem: refreshItem,
+    changeRefreshItem: changeRefreshItem,
   };
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }

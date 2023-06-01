@@ -2,8 +2,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-import { useContext, useEffect, useState } from 'react';
+import { View, Text, Button } from 'react-native';
+import { useContext, useEffect, useState, useRef } from 'react';
 import LoginScreen from './screens/LoginScreen';
 import SignupScreen from './screens/SignupScreen';
 import HomeScreen from './screens/HomeScreen';
@@ -17,8 +17,71 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import IconButton from './components/ui/IconButton';
 import * as SplashScreen from 'expo-splash-screen';
+import * as Notifications from 'expo-notifications';
 
-SplashScreen.preventAutoHideAsync();
+// SplashScreen.preventAutoHideAsync();
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
+
+// Can use this function below OR use Expo's Push Notification Tool from: https://expo.dev/notifications
+async function sendPushNotification(expoPushToken) {
+  console.log(`Got token in sendPush function as: ${expoPushToken}`);
+  const message = {
+    to: expoPushToken,
+    sound: 'default',
+    title: 'Its okay',
+    body: 'Wait for 2-3 days before zoom meeting!',
+    data: { someData: 'goes here' },
+  };
+
+  const response = await fetch('https://exp.host/--/api/v2/push/send', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Accept-encoding': 'gzip, deflate',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(message),
+  });
+  console.log(JSON.stringify(response));
+}
+
+async function registerForPushNotificationsAsync() {
+  let token;
+  console.log('In register');
+  const { status: existingStatus } = await Notifications.getPermissionsAsync();
+  let finalStatus = existingStatus;
+  console.log(finalStatus);
+  if (existingStatus !== 'granted') {
+    const { status2 } = await Notifications.requestPermissionsAsync();
+    finalStatus = status2;
+  }
+  console.log(finalStatus);
+  if (finalStatus !== 'granted') {
+    alert('Failed to get push token for push notification!');
+    return;
+  }
+  const projectId = '7877e9e1-c511-4982-97dc-61067cc16bca';
+  token = (await Notifications.getExpoPushTokenAsync({ projectId })).data;
+  console.log(token);
+
+  if (Platform.OS === 'android') {
+    Notifications.setNotificationChannelAsync('default', {
+      name: 'default',
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: '#FF231F7C',
+    });
+  }
+  return token;
+  // return 'ExponentPushToken[5PeBOUCZIKz1YrF9igWqeg]';
+}
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -127,6 +190,7 @@ function AuthenticatedStack() {
         authCtx.setRegisteredUser(true);
       }
     }
+    authCtx.setRegisteredUser(true);
 
     fetchRegistered();
   }, []);
@@ -209,10 +273,64 @@ function Root() {
 }
 
 export default function App() {
+  const [expoPushToken, setExpoPushToken] = useState('');
+  const [notification, setNotification] = useState(false);
+  const notificationListener = useRef();
+  const responseListener = useRef();
+
+  useEffect(() => {
+    registerForPushNotificationsAsync().then((token) => {
+      setExpoPushToken(token);
+      console.log(token);
+    });
+
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        setNotification(notification);
+      });
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+      });
+
+    return () => {
+      Notifications.removeNotificationSubscription(
+        notificationListener.current
+      );
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, []);
+
   // we move the authcontextprovider stuff into this container
 
   return (
     <>
+      {/* <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'space-around',
+        }}
+      >
+        <Text>Your expo push token: {expoPushToken}</Text>
+        <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+          <Text>
+            Title: {notification && notification.request.content.title}{' '}
+          </Text>
+          <Text>Body: {notification && notification.request.content.body}</Text>
+          <Text>
+            Data:{' '}
+            {notification && JSON.stringify(notification.request.content.data)}
+          </Text>
+        </View>
+        <Button
+          title='Press to Send Notification'
+          onPress={async () => {
+            await sendPushNotification(expoPushToken);
+          }}
+        />
+      </View> */}
       <StatusBar style='light' />
       <AuthContextProvider>
         <CartContextProvider>
