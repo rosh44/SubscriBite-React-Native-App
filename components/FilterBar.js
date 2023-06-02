@@ -9,12 +9,13 @@ import {
 function FilterBar({ selectedFilter, handleCategoryPress }) {
   const categoryData = [
     { name: 'Dairy', filter: 'dairy' },
-    { name: 'Medicines', filter: 'medicine' },
     { name: 'Fruits', filter: 'fruit' },
     { name: 'Poultry', filter: 'poultry' },
     { name: 'Vegan', filter: 'vegan' },
     { name: 'Dessert', filter: 'dessert' },
     { name: 'Bakery', filter: 'bakery' },
+    { name: 'Medicines', filter: 'medicine' },
+
     // Add more category items as needed
   ];
   return (

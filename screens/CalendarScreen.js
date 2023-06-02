@@ -11,7 +11,7 @@ function CalendarScreen({ route }) {
   const cartCtx = useContext(CartContext);
 
   const refreshItem = cartCtx.refreshItem;
-  console.log(`RefreshItem: ${refreshItem}`);
+  // console.log(`RefreshItem: ${refreshItem}`);
   const { userId, api } = route.params;
   const authCtx = useContext(AuthContext);
 
@@ -51,7 +51,7 @@ function CalendarScreen({ route }) {
 
   useEffect(() => {
     const url = api + '/subscriptions/upcoming_orders';
-    const data = { userId: userId };
+    const data = { user_id: userId };
     fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -64,7 +64,7 @@ function CalendarScreen({ route }) {
       .catch((error) => {
         console.error('Error:', error);
       });
-  }, [dataRefreshed]);
+  }, [dataRefreshed, refreshItem]);
 
   useEffect(() => {
     const todaysDate = new Date().toISOString().substring(0, 10);

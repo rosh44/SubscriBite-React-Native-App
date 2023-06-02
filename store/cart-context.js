@@ -21,18 +21,18 @@ function CartContextProvider({ children }) {
   const [subscriptions, setSubscriptions] = useState([]);
   const [refreshItem, setRefreshItem] = useState(0);
   useEffect(() => {
-    console.log(`Updated subscriptions: ${JSON.stringify(subscriptions)}`);
+    // console.log(`Updated subscriptions: ${JSON.stringify(subscriptions)}`);
   }, [subscriptions]);
 
   function changeRefreshItem() {
     setRefreshItem(refreshItem + 1);
-    console.log(`Inside store: ${refreshItem}`);
+    // console.log(`Inside store: ${refreshItem}`);
   }
   function addSubscription(subscription) {
     const myObject = JSON.stringify(subscription);
-    console.log(`Received subscription: ${myObject}`);
+    // console.log(`Received subscription: ${myObject}`);
     setSubscriptions([...subscriptions, subscription]);
-    console.log(`Set subscription: ${subscriptions}`);
+    // console.log(`Set subscription: ${subscriptions}`);
   }
   // now create a value object that associates the created values with the context object
   const value = {

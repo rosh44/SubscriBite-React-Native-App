@@ -17,71 +17,71 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import IconButton from './components/ui/IconButton';
 import * as SplashScreen from 'expo-splash-screen';
-import * as Notifications from 'expo-notifications';
+// import * as Notifications from 'expo-notifications';
 
-// SplashScreen.preventAutoHideAsync();
+SplashScreen.preventAutoHideAsync();
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false,
-  }),
-});
+// Notifications.setNotificationHandler({
+//   handleNotification: async () => ({
+//     shouldShowAlert: true,
+//     shouldPlaySound: false,
+//     shouldSetBadge: false,
+//   }),
+// });
 
 // Can use this function below OR use Expo's Push Notification Tool from: https://expo.dev/notifications
-async function sendPushNotification(expoPushToken) {
-  console.log(`Got token in sendPush function as: ${expoPushToken}`);
-  const message = {
-    to: expoPushToken,
-    sound: 'default',
-    title: 'Its okay',
-    body: 'Wait for 2-3 days before zoom meeting!',
-    data: { someData: 'goes here' },
-  };
+// async function sendPushNotification(expoPushToken) {
+//   console.log(`Got token in sendPush function as: ${expoPushToken}`);
+//   const message = {
+//     to: expoPushToken,
+//     sound: 'default',
+//     title: 'Its okay',
+//     body: 'Wait for 2-3 days before zoom meeting!',
+//     data: { someData: 'goes here' },
+//   };
 
-  const response = await fetch('https://exp.host/--/api/v2/push/send', {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Accept-encoding': 'gzip, deflate',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(message),
-  });
-  console.log(JSON.stringify(response));
-}
+//   const response = await fetch('https://exp.host/--/api/v2/push/send', {
+//     method: 'POST',
+//     headers: {
+//       Accept: 'application/json',
+//       'Accept-encoding': 'gzip, deflate',
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify(message),
+//   });
+//   console.log(JSON.stringify(response));
+// }
 
-async function registerForPushNotificationsAsync() {
-  let token;
-  console.log('In register');
-  const { status: existingStatus } = await Notifications.getPermissionsAsync();
-  let finalStatus = existingStatus;
-  console.log(finalStatus);
-  if (existingStatus !== 'granted') {
-    const { status2 } = await Notifications.requestPermissionsAsync();
-    finalStatus = status2;
-  }
-  console.log(finalStatus);
-  if (finalStatus !== 'granted') {
-    alert('Failed to get push token for push notification!');
-    return;
-  }
-  const projectId = '7877e9e1-c511-4982-97dc-61067cc16bca';
-  token = (await Notifications.getExpoPushTokenAsync({ projectId })).data;
-  console.log(token);
+// async function registerForPushNotificationsAsync() {
+//   let token;
+//   console.log('In register');
+//   const { status: existingStatus } = await Notifications.getPermissionsAsync();
+//   let finalStatus = existingStatus;
+//   console.log(finalStatus);
+//   if (existingStatus !== 'granted') {
+//     const { status2 } = await Notifications.requestPermissionsAsync();
+//     finalStatus = status2;
+//   }
+//   console.log(finalStatus);
+//   if (finalStatus !== 'granted') {
+//     alert('Failed to get push token for push notification!');
+//     return;
+//   }
+//   const projectId = '7877e9e1-c511-4982-97dc-61067cc16bca';
+//   token = (await Notifications.getExpoPushTokenAsync({ projectId })).data;
+//   console.log(token);
 
-  if (Platform.OS === 'android') {
-    Notifications.setNotificationChannelAsync('default', {
-      name: 'default',
-      importance: Notifications.AndroidImportance.MAX,
-      vibrationPattern: [0, 250, 250, 250],
-      lightColor: '#FF231F7C',
-    });
-  }
-  return token;
-  // return 'ExponentPushToken[5PeBOUCZIKz1YrF9igWqeg]';
-}
+//   if (Platform.OS === 'android') {
+//     Notifications.setNotificationChannelAsync('default', {
+//       name: 'default',
+//       importance: Notifications.AndroidImportance.MAX,
+//       vibrationPattern: [0, 250, 250, 250],
+//       lightColor: '#FF231F7C',
+//     });
+//   }
+//   return token;
+//   // return 'ExponentPushToken[5PeBOUCZIKz1YrF9igWqeg]';
+// }
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -177,7 +177,6 @@ function AuthenticatedStack() {
   const authCtx = useContext(AuthContext);
   useEffect(() => {
     // console.log('Am in use Effect');
-
     async function fetchRegistered() {
       const isRegistered = await AsyncStorage.getItem('registered');
 
@@ -244,7 +243,7 @@ function Navigation() {
 }
 
 function Root() {
-  console.log('Am in root');
+  // console.log('Am in root');
   const [isTryingLogin, setIsTryingLogin] = useState(true); // at first we are always logging in
   const authCtx = useContext(AuthContext);
 
@@ -278,29 +277,29 @@ export default function App() {
   const notificationListener = useRef();
   const responseListener = useRef();
 
-  useEffect(() => {
-    registerForPushNotificationsAsync().then((token) => {
-      setExpoPushToken(token);
-      console.log(token);
-    });
+  // useEffect(() => {
+  //   registerForPushNotificationsAsync().then((token) => {
+  //     setExpoPushToken(token);
+  //     console.log(token);
+  //   });
 
-    notificationListener.current =
-      Notifications.addNotificationReceivedListener((notification) => {
-        setNotification(notification);
-      });
+  //   notificationListener.current =
+  //     Notifications.addNotificationReceivedListener((notification) => {
+  //       setNotification(notification);
+  //     });
 
-    responseListener.current =
-      Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log(response);
-      });
+  //   responseListener.current =
+  //     Notifications.addNotificationResponseReceivedListener((response) => {
+  //       console.log(response);
+  //     });
 
-    return () => {
-      Notifications.removeNotificationSubscription(
-        notificationListener.current
-      );
-      Notifications.removeNotificationSubscription(responseListener.current);
-    };
-  }, []);
+  //   return () => {
+  //     Notifications.removeNotificationSubscription(
+  //       notificationListener.current
+  //     );
+  //     Notifications.removeNotificationSubscription(responseListener.current);
+  //   };
+  // }, []);
 
   // we move the authcontextprovider stuff into this container
 

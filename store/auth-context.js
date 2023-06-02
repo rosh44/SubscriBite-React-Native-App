@@ -20,7 +20,7 @@ function AuthContextProvider({ children }) {
   const [isRegistered, setIsRegistered] = useState(false);
 
   function authenticate({ token, localId }) {
-    console.log(`Token being set while authenticate: ${token}, ${localId}`);
+    // console.log(`Token being set while authenticate: ${token}, ${localId}`);
     setAuthToken(token);
     setLocalId(localId);
     AsyncStorage.setItem('token', token); // key-> value, ensure both in string format
@@ -28,7 +28,7 @@ function AuthContextProvider({ children }) {
   }
 
   function setUserDetails(name) {
-    console.log(`Name set as: ${name}`);
+    // console.log(`Name set as: ${name}`);
     setName(name);
   }
   function setRegisteredUser(registered) {

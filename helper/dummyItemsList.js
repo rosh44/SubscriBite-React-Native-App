@@ -1,4 +1,4 @@
-const dummyItemsList = [
+let dummyItemsList = [
   {
     id: 1,
     name: 'Bananas',
@@ -64,7 +64,7 @@ const dummyItemsList = [
     attributes: ['grains', 'staple'],
   },
   {
-    id: 9,
+    id: 20,
     name: 'Pasta',
     price: 1.99,
     quantity: 'per pack',

@@ -3,15 +3,27 @@ import { AuthContext } from '../store/auth-context';
 import { CartContext } from '../store/cart-context';
 import { useState, useContext, useEffect } from 'react';
 import axios from 'axios';
-import dummyItemsList from './dummyItemsList';
 
 import SearchBar from '../components/SearchBar';
 import ItemList from '../components/ItemList';
 import AddItemModal from '../components/AddItemModal';
 import FilterBar from '../components/FilterBar';
 import * as SplashScreen from 'expo-splash-screen';
+import ImportItems from '../helper/ImportItems';
+import { itemsList } from '../helper/ImportItems';
 
 function HomeScreen() {
+  const [fetchItems, setFetchItems] = useState(true);
+  useEffect(() => {
+    // console.log('In home screen use efect');
+    async function getItemsFromBackend() {
+      const itemlist = await ImportItems();
+      // console.log(`=======> ${itemlist[0]}`);
+      setFilteredItems(itemlist);
+    }
+    getItemsFromBackend();
+  }, []);
+
   const authCtx = useContext(AuthContext);
   const cartCtx = useContext(CartContext);
 
@@ -22,7 +34,7 @@ function HomeScreen() {
   endDate.setDate(currentDate.getDate() + 365);
 
   const [searchText, setSearchText] = useState(''); // outside
-  const [filteredItems, setFilteredItems] = useState(dummyItemsList); // list
+  const [filteredItems, setFilteredItems] = useState([]); // list
   const [modalVisible, setModalVisible] = useState(false); // modal
   const [selectedItem, setSelectedItem] = useState(null); // modal
 
@@ -36,7 +48,7 @@ function HomeScreen() {
   const [selectedFilter, setSelectedFilter] = useState(''); // for outside
 
   const filterItemsFromCategory = (text) => {
-    const filtered = dummyItemsList.filter(
+    const filtered = itemsList.filter(
       (item) =>
         item.name.toLocaleLowerCase().includes(text.toLocaleLowerCase()) ||
         item.attributes.some((attribute) =>
@@ -58,7 +70,7 @@ function HomeScreen() {
     }
   }; // list
   const filterItems = (text) => {
-    const filtered = dummyItemsList.filter(
+    const filtered = itemsList.filter(
       (item) =>
         item.name.toLocaleLowerCase().includes(text.toLocaleLowerCase()) ||
         item.attributes.some((attribute) =>
@@ -107,9 +119,9 @@ function HomeScreen() {
       quantity: quantity,
       slot: timeslot,
     };
-    console.log(` ${fromDate} -- ${toDate}`);
+    // console.log(` ${fromDate} -- ${toDate}`);
 
-    console.log(`Sending request to backend: ${add_subscription_request}`);
+    // console.log(`Sending request to backend: ${add_subscription_request}`);
     try {
       const response = await axios.post(
         'http://dev-lb-subscribite-234585004.us-west-2.elb.amazonaws.com/subscriptions/subscribe',
@@ -120,7 +132,7 @@ function HomeScreen() {
           },
         }
       );
-      console.log(`Current Subscriptions: ${cartCtx.subscriptions}`);
+      // console.log(`Current Subscriptions: ${cartCtx.subscriptions}`);
 
       const store_subscription = {
         user_id: 163,
@@ -129,11 +141,11 @@ function HomeScreen() {
         quantity: quantity,
         timeslot: timeslot,
       };
-      console.log(`Subscription to be stored: ${store_subscription}`);
+      // console.log(`Subscription to be stored: ${store_subscription}`);
 
       cartCtx.addSubscription(store_subscription);
       cartCtx.changeRefreshItem();
-      console.log(`Current Subscriptions: ${cartCtx.subscriptions}`);
+      // console.log(`Current Subscriptions: ${cartCtx.subscriptions}`);
 
       // console.log(`Status: ${response.status}`);
       // now I will add it to react-store
@@ -151,6 +163,7 @@ function HomeScreen() {
     setQuantity(1);
   } // modal
   const handleLayout = () => {
+    // fetchItems ? null : setFilteredItems(itemsList);
     SplashScreen.hideAsync();
   };
   const name = authCtx.name;
