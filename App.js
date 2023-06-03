@@ -51,7 +51,7 @@ const BottomTabNavigation = () => {
         }}
       />
       <BottomTab.Screen
-        name='Subscriptions'
+        name='Calendar'
         component={CalendarScreen}
         initialParams={{
           api: 'http://dev-lb-subscribite-234585004.us-west-2.elb.amazonaws.com',
