@@ -17,6 +17,7 @@ import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import IconButton from './components/ui/IconButton';
 import * as SplashScreen from 'expo-splash-screen';
 
+
 // SplashScreen.preventAutoHideAsync();
 
 const Stack = createNativeStackNavigator();
@@ -115,7 +116,7 @@ function AuthenticatedStack() {
     // console.log('Am in use Effect');
     async function fetchRegistered() {
       const isRegistered = await AsyncStorage.getItem('registered');
-
+      //isRegistered = false;
       if (isRegistered) {
         // that means token is on device, hence user is already logged in
         // so set the auth context
@@ -140,7 +141,7 @@ function AuthenticatedStack() {
     >
       {!authCtx.isRegistered ? (
         <Stack.Screen
-          name='UserDetail'
+          name='Profile Details'
           component={UserDetailScreen}
           // options={{
           //   headerRight: ({ tintColor }) => {
