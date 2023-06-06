@@ -125,28 +125,22 @@ function UserDetailScreen() {
             lastname: lastName.trim(),
             phone_number: formattedPhoneNumber.trim(),
           },
-          {
-            headers: {
-              //Authorization: `<YOUR_ACCESS_KEY>`,
-              'Content-Type': 'application/json',
-            },
-          }
-        );
-        console.log('Status:', response.status);
-        setIsSuccess(true);
-        //after success, I want to store the name of the user in the React Store and also set the user as a registered user
-        authCtx.setUserDetails(firstName);
-        authCtx.setRegisteredUser(true);
-        //then I want to have a 1.5 second timeout before navigating to the Home page
-        setTimeout(() => {
-          navigation.replace('HomeScreenStack');
-        }, 1500);
-      } catch (error) {
-        console.error('Error:', error);
-        setIsError(true);
-      } finally {
-        setIsLoading(false);
-      }
+        }
+      );
+      // console.log('Status:', response.status);
+      setIsSuccess(true);
+      //after success, I want to store the name of the user in the React Store and also set the user as a registered user
+      authCtx.setUserDetails(firstName);
+      authCtx.setRegisteredUser(true);
+      //then I want to have a 1.5 second timeout before navigating to the Home page
+      setTimeout(() => {
+        navigation.replace('HomeScreenStack');
+      }, 1500);
+    } catch (error) {
+      console.error('Error:', error);
+      setIsError(true);
+    } finally {
+      setIsLoading(false);
     }
   }
 

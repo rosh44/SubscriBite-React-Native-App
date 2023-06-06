@@ -6,8 +6,9 @@ import {
   Modal,
   StyleSheet,
   TextInput,
+  Keyboard,
 } from 'react-native';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Colors } from '../constants/styles';
 
 import TimeSlotPicker from './TimeSlotPicker';
@@ -37,9 +38,9 @@ function AddItemModal({
   const [selectedDateField, setSelectedDateField] = useState(null);
   const [firstDate, setFirstDate] = useState(tomorrowDate);
   const [secondDate, setSecondDate] = useState(endDate);
-
+  const inputFrequencyRef = useRef(null);
   const showDatePicker = (dateField) => {
-    console.log('Pressed');
+    // console.log('Pressed');
     if (dateField === 'fromDate') {
       setSelectedDateField('fromDate');
     } else {
@@ -50,7 +51,7 @@ function AddItemModal({
 
   const hideDatePicker = () => {
     setDatePickerVisible(false);
-    console.log('Hid date picker');
+    // console.log('Hid date picker');
   };
 
   const handleConfirmDate = (date) => {
@@ -62,8 +63,12 @@ function AddItemModal({
       setToDate(date.toISOString().slice(0, 10));
       setSecondDate(date);
     }
-    console.log(fromDate, toDate);
+    // console.log(fromDate, toDate);
     hideDatePicker();
+  };
+
+  const handleFrequencyDone = () => {
+    Keyboard.dismiss();
   };
 
   const totalCost = selectedItem ? selectedItem.price * quantity : 0;
@@ -140,12 +145,18 @@ function AddItemModal({
 
           <View style={styles.inputContainer}>
             <Text style={styles.inputLabel}>Frequency (days):</Text>
-            <TextInput
-              style={styles.textInput}
-              value={frequency}
-              onChangeText={setFrequency}
-              keyboardType='numeric'
-            ></TextInput>
+            <TouchableWithoutFeedback
+              onPress={handleFrequencyDone}
+              keyboardShouldPersistTaps='handled'
+            >
+              <TextInput
+                ref={inputFrequencyRef}
+                style={styles.textInput}
+                value={frequency}
+                onChangeText={setFrequency}
+                keyboardType='numeric'
+              ></TextInput>
+            </TouchableWithoutFeedback>
           </View>
           <View style={styles.inputContainer}>
             <Text style={styles.inputLabel}>Timeslot: </Text>
@@ -188,6 +199,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 16,
+    justifyContent: 'space-between',
   },
   inputLabel: {
     fontSize: 16,

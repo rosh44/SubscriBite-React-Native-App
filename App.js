@@ -2,7 +2,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
 import { useContext, useEffect, useState } from 'react';
 import LoginScreen from './screens/LoginScreen';
 import SignupScreen from './screens/SignupScreen';
@@ -18,7 +17,8 @@ import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import IconButton from './components/ui/IconButton';
 import * as SplashScreen from 'expo-splash-screen';
 
-//SplashScreen.preventAutoHideAsync();
+
+// SplashScreen.preventAutoHideAsync();
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -52,7 +52,7 @@ const BottomTabNavigation = () => {
         }}
       />
       <BottomTab.Screen
-        name='Subscriptions'
+        name='Calendar'
         component={CalendarScreen}
         initialParams={{
           api: 'http://dev-lb-subscribite-234585004.us-west-2.elb.amazonaws.com',
@@ -114,7 +114,6 @@ function AuthenticatedStack() {
   const authCtx = useContext(AuthContext);
   useEffect(() => {
     // console.log('Am in use Effect');
-
     async function fetchRegistered() {
       const isRegistered = await AsyncStorage.getItem('registered');
       //isRegistered = false;
@@ -127,6 +126,7 @@ function AuthenticatedStack() {
         authCtx.setRegisteredUser(true);
       }
     }
+    authCtx.setRegisteredUser(true);
 
     fetchRegistered();
   }, []);
@@ -180,7 +180,7 @@ function Navigation() {
 }
 
 function Root() {
-  console.log('Am in root');
+  // console.log('Am in root');
   const [isTryingLogin, setIsTryingLogin] = useState(true); // at first we are always logging in
   const authCtx = useContext(AuthContext);
 
@@ -209,8 +209,6 @@ function Root() {
 }
 
 export default function App() {
-  // we move the authcontextprovider stuff into this container
-
   return (
     <>
       <StatusBar style='light' />
