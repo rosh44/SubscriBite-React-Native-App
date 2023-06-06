@@ -1,12 +1,19 @@
 import React, { useState, useContext, useRef } from 'react';
-import { Alert,View, StyleSheet, Text,ScrollView, KeyboardAvoidingView } from 'react-native';
+import {
+  Alert,
+  View,
+  StyleSheet,
+  Text,
+  ScrollView,
+  KeyboardAvoidingView,
+} from 'react-native';
 import axios from 'axios';
 import { AuthContext } from '../store/auth-context';
 import { useNavigation } from '@react-navigation/native';
 import Button from '../components/ui/Button';
 import Input from '../components/Auth/Input';
 import { Colors } from '../constants/styles';
-import PhoneInput from "react-native-phone-input";
+import PhoneInput from 'react-native-phone-input';
 
 function UserDetailScreen() {
   const authCtx = useContext(AuthContext);
@@ -33,9 +40,8 @@ function UserDetailScreen() {
   const [phnNoIsInvalid, setPhnNoInvalid] = useState(false);
   const [zipCodeIsInvalid, setZipCodeInvalid] = useState(false);
 
-  function validate(){
-    
-    const phoneNumber = (phoneInputRef.current.getValue()).trim();
+  function validate() {
+    const phoneNumber = phoneInputRef.current.getValue().trim();
     const zipCodeTrimmed = zipCode.trim();
     const fNameTrimmed = firstName.trim();
     const lNameTrimmed = lastName.trim();
@@ -50,7 +56,7 @@ function UserDetailScreen() {
     const streetAddrIsValid = streetAddrTrimmed.length != 0;
     const aptNoIsValid = aptNoTrimmed.length != 0;
     const cityIsValid = cityTrimmed.length != 0;
-    
+
     setFNameInvalid(!fNameIsValid);
 
     if (!fNameIsValid) {
@@ -104,11 +110,9 @@ function UserDetailScreen() {
   }
 
   async function handleSubmit() {
-
     const isValid = validate();
 
-    if (isValid){
-  
+    if (isValid) {
       setIsLoading(true);
       setIsSuccess(false);
       setIsError(false);
@@ -116,7 +120,7 @@ function UserDetailScreen() {
       try {
         const formattedPhoneNumber = phoneInputRef.current.getValue();
 
-        console.log("PHONE NUMBER=", formattedPhoneNumber);
+        console.log('PHONE NUMBER=', formattedPhoneNumber);
 
         const response = await axios.post(
           'http://dev-lb-subscribite-234585004.us-west-2.elb.amazonaws.com/register',
@@ -124,95 +128,104 @@ function UserDetailScreen() {
             firstname: firstName.trim(),
             lastname: lastName.trim(),
             phone_number: formattedPhoneNumber.trim(),
-          },
-        }
-      );
-      // console.log('Status:', response.status);
-      setIsSuccess(true);
-      //after success, I want to store the name of the user in the React Store and also set the user as a registered user
-      authCtx.setUserDetails(firstName);
-      authCtx.setRegisteredUser(true);
-      //then I want to have a 1.5 second timeout before navigating to the Home page
-      setTimeout(() => {
-        navigation.replace('HomeScreenStack');
-      }, 1500);
-    } catch (error) {
-      console.error('Error:', error);
-      setIsError(true);
-    } finally {
-      setIsLoading(false);
+          }
+        );
+        // console.log('Status:', response.status);
+        setIsSuccess(true);
+        //after success, I want to store the name of the user in the React Store and also set the user as a registered user
+        authCtx.setUserDetails(firstName);
+        authCtx.setRegisteredUser(true);
+        //then I want to have a 1.5 second timeout before navigating to the Home page
+        setTimeout(() => {
+          navigation.replace('HomeScreenStack');
+        }, 1500);
+      } catch (error) {
+        console.error('Error:', error);
+        setIsError(true);
+      } finally {
+        setIsLoading(false);
+      }
     }
+
+    return (
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <View style={styles.authContent}>
+            <View style={styles.form}>
+              <View>
+                <Input
+                  label='First Name'
+                  onUpdateValue={setFirstName}
+                  value={firstName}
+                  isInvalid={fNameIsInvalid}
+                />
+                <Input
+                  label='Last Name'
+                  onUpdateValue={setLastName}
+                  value={lastName}
+                  isInvalid={lNameIsInvalid}
+                />
+                <View style={styles.inputContainer}>
+                  <Text
+                    style={[
+                      styles.label,
+                      phnNoIsInvalid && styles.labelInvalid,
+                    ]}
+                  >
+                    Phone No.
+                  </Text>
+                  <PhoneInput
+                    style={[
+                      styles.phoneInput,
+                      phnNoIsInvalid && styles.inputInvalid,
+                    ]}
+                    ref={phoneInputRef}
+                    initialCountry='us'
+                    withShadow
+                    autoFocus
+                  />
+                </View>
+                <Input
+                  label='Street Address'
+                  onUpdateValue={setStreetAddress}
+                  value={streetAddress}
+                  isInvalid={streetAddrIsInvalid}
+                />
+                <Input
+                  label='Apartment No.'
+                  onUpdateValue={setApartmentNumber}
+                  value={apartmentNumber}
+                  isInvalid={aptNoIsInvalid}
+                />
+                <Input
+                  label='City'
+                  onUpdateValue={setCity}
+                  value={city}
+                  isInvalid={cityIsInvalid}
+                />
+                <Input
+                  keyboardType='numeric'
+                  label='Zip Code'
+                  onUpdateValue={setZipCode}
+                  value={zipCode}
+                  isInvalid={zipCodeIsInvalid}
+                />
+                <View style={styles.buttons}>
+                  <Button onPress={handleSubmit}>{'Submit'}</Button>
+                </View>
+                {isLoading && <Text>Loading...</Text>}
+                {isSuccess && <Text style={{ color: 'green' }}>Success!</Text>}
+                {isError && <Text style={{ color: 'red' }}>Error!</Text>}
+              </View>
+            </View>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    );
   }
-
-  return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    >
-    <ScrollView contentContainerStyle={styles.scrollContainer}>
-    <View style={styles.authContent}>
-    <View style={styles.form}>
-      <View>
-        <Input
-          label='First Name'
-          onUpdateValue={setFirstName}
-          value={firstName}
-          isInvalid={fNameIsInvalid}
-        />
-        <Input
-          label='Last Name'
-          onUpdateValue={setLastName}
-          value={lastName}
-          isInvalid={lNameIsInvalid}
-        />
-        <View style={styles.inputContainer}>
-          <Text style={[styles.label, phnNoIsInvalid && styles.labelInvalid]}>Phone No.</Text>
-          <PhoneInput
-                style={[styles.phoneInput, phnNoIsInvalid && styles.inputInvalid]}
-                ref={phoneInputRef}
-                initialCountry="us"
-                withShadow
-                autoFocus
-            />
-        </View>
-        <Input
-          label='Street Address'
-          onUpdateValue={setStreetAddress}
-          value={streetAddress}
-          isInvalid={streetAddrIsInvalid}
-        />
-        <Input
-          label='Apartment No.'
-          onUpdateValue={setApartmentNumber}
-          value={apartmentNumber}
-          isInvalid={aptNoIsInvalid}
-        />
-        <Input
-          label='City'
-          onUpdateValue={setCity}
-          value={city}
-          isInvalid={cityIsInvalid}
-        />
-        <Input
-          keyboardType='numeric'
-          label='Zip Code'
-          onUpdateValue={setZipCode}
-          value={zipCode}
-          isInvalid={zipCodeIsInvalid}
-        />
-        <View style={styles.buttons}>
-          <Button onPress={handleSubmit}>{'Submit'}</Button>
-        </View>
-        {isLoading && <Text>Loading...</Text>}
-        {isSuccess && <Text style={{ color: 'green' }}>Success!</Text>}
-        {isError && <Text style={{ color: 'red' }}>Error!</Text>}
-      </View>
-    </View>
-    </View>
-    </ScrollView>
-    </KeyboardAvoidingView>
-  );
 }
-
 export default UserDetailScreen;
 
 const styles = StyleSheet.create({
@@ -225,7 +238,7 @@ const styles = StyleSheet.create({
   },
   label: {
     color: 'white',
-    marginBottom: 4
+    marginBottom: 4,
   },
   phoneInput: {
     paddingVertical: 12,
@@ -249,10 +262,10 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 20
+    padding: 20,
   },
   buttons: {
-    marginTop: 12
+    marginTop: 12,
   },
   labelInvalid: {
     color: Colors.error500,
