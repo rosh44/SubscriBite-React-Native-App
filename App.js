@@ -1,5 +1,5 @@
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import { createNativeStackNavigator, StackActions} from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useContext, useEffect, useState } from 'react';
@@ -23,8 +23,20 @@ import * as SplashScreen from 'expo-splash-screen';
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
 
-const BottomTabNavigation = () => {
+const RenderAccountScreenNavigation = ({ navigation }) => (
+  <AccountScreen navigation={navigation} />
+);
+
+
+
+const BottomTabNavigation = ({navigation}) => {
   const authCtx = useContext(AuthContext);
+  //const navigation = useNavigation();
+
+  const handleLogout = () => {
+    authCtx.logout();
+  };
+
   return (
     <BottomTab.Navigator
       screenOptions={{
@@ -37,7 +49,7 @@ const BottomTabNavigation = () => {
             icon='exit'
             color={tintColor}
             size={24}
-            onPress={authCtx.logout}
+            onPress={handleLogout}
           />
         ),
       }}
@@ -66,18 +78,25 @@ const BottomTabNavigation = () => {
       />
       <BottomTab.Screen
         name='Account'
-        component={AccountScreen}
+        //component={AccountScreen}
+        component={RenderAccountScreenNavigation}
         options={{
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name='account' color={color} size={size} />
-          ),
+          )//,headerShown: false 
         }}
       />
     </BottomTab.Navigator>
   );
 };
 
+const RenderBottomTabNavigation = ({ navigation }) => (
+  <BottomTabNavigation navigation={navigation} />
+);
+
 const HomeScreenStack = () => {
+ 
+
   return (
     <Stack.Navigator
       initialRouteName='HomeScreen'
@@ -85,7 +104,8 @@ const HomeScreenStack = () => {
     >
       <Stack.Screen
         name='BottomTabNavigation'
-        component={BottomTabNavigation}
+        //component={BottomTabNavigation}
+        component={RenderBottomTabNavigation}
       />
     </Stack.Navigator>
   );
@@ -112,6 +132,7 @@ function AuthenticatedStack() {
   // we do not need to show login screens and all once this is done
   // you only render this Navigator if a certain condition is met (ie logged in user)
   const authCtx = useContext(AuthContext);
+  const navigation = useNavigation();
   useEffect(() => {
     // console.log('Am in use Effect');
     async function fetchRegistered() {
@@ -130,6 +151,10 @@ function AuthenticatedStack() {
 
     fetchRegistered();
   }, []);
+
+const RenderHomeScreenStack = () => (
+<HomeScreenStack navigation={navigation} />
+);
 
   return (
     <Stack.Navigator
@@ -158,7 +183,8 @@ function AuthenticatedStack() {
         <Stack.Screen
           options={{ headerShown: false }}
           name='HomeScreenStack'
-          component={HomeScreenStack}
+          //component={HomeScreenStack}
+          component={RenderHomeScreenStack}
         />
       )}
       {/* <Stack.Screen name='UserDetail' component={UserDetailScreen} />
