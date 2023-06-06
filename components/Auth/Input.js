@@ -9,6 +9,10 @@ function Input({
   onUpdateValue,
   value,
   isInvalid,
+  placeholder,
+  multiline,
+  numberOfLines,
+  textAlignVertical
 }) {
   return (
     <View style={styles.inputContainer}>
@@ -23,6 +27,10 @@ function Input({
         secureTextEntry={secure}
         onChangeText={onUpdateValue}
         value={value}
+        placeholder={placeholder}
+        multiline={multiline}
+        numberOfLines={numberOfLines}
+        textAlignVertical={textAlignVertical}
       />
     </View>
   );
