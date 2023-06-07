@@ -34,8 +34,6 @@ function MySubscriptionScreen() {
   const [filteredItems, setFilteredItems] = useState([]); // list
   const [modalVisible, setModalVisible] = useState(false); // modal
   const [selectedItem, setSelectedItem] = useState(null); // modal
-  
-  
 
   const [fromDate, setFromDate] = useState(
     tomorrowDate.toISOString().slice(0, 10)
@@ -46,16 +44,13 @@ function MySubscriptionScreen() {
   const [timeslot, setTimeslot] = useState(1); // modal
   const [selectedFilter, setSelectedFilter] = useState(''); // for outside
 
-
-  
-
   const handleItemPress = (item) => {
     setSelectedItem(item);
-    setQuantity(item.item_quantity)
-    setFrequency(''+item.freq)
-    setTimeslot(item.time_slot_id)
-    setFromDate(item.sub_start_date)
-    setToDate(item.sub_end_date)
+    setQuantity(item.item_quantity);
+    setFrequency('' + item.freq);
+    setTimeslot(item.time_slot_id);
+    setFromDate(item.sub_start_date);
+    setToDate(item.sub_end_date);
     setModalVisible(true);
   }; // list
 
@@ -83,13 +78,13 @@ function MySubscriptionScreen() {
       user_id: 163,
       sub_id: selectedItem.subs_id,
       item_id: selectedItem.id,
-      sub_start_date: new Date(fromDate).toISOString().slice(0,10),
-      sub_end_date: new Date(toDate).toISOString().slice(0,10),
+      sub_start_date: new Date(fromDate).toISOString().slice(0, 10),
+      sub_end_date: new Date(toDate).toISOString().slice(0, 10),
       freq: parseInt(frequency),
       quantity: quantity,
       slot: timeslot,
     };
-    console.log("update subs req:",upd_subscription_request);
+    console.log('update subs req:', upd_subscription_request);
     try {
       const response = await axios.put(
         'http://dev-lb-subscribite-234585004.us-west-2.elb.amazonaws.com/subscriptions/subscribe',
@@ -100,10 +95,10 @@ function MySubscriptionScreen() {
           },
         }
       );
-      console.log("update subs res:",response.data);
+      console.log('update subs res:', response.data);
       const itemlist = await ImportSubscriptions();
       setFilteredItems(itemlist);
-
+      // cartCtx.changeRefreshItem(); // to ensure calendar screen calls api again
       Alert.alert('Success', 'Subscription updated!');
     } catch (error) {
       console.log(error);
@@ -113,23 +108,24 @@ function MySubscriptionScreen() {
   } // modal
 
   async function handleUnSubscribe() {
-    console.log("sub_id",selectedItem.subs_id)
+    console.log('sub_id', selectedItem.subs_id);
     const unsubscribe_request = {
-      sub_id: ''+selectedItem.subs_id,
+      sub_id: '' + selectedItem.subs_id,
     };
     try {
       const response = await axios.delete(
         'http://dev-lb-subscribite-234585004.us-west-2.elb.amazonaws.com/subscriptions',
         {
-          data: unsubscribe_request, 
+          data: unsubscribe_request,
           headers: {
             'Content-Type': 'application/json',
           },
         }
       );
-      console.log("DELETED",response.data);
+      console.log('DELETED', response.data);
       const itemlist = await ImportSubscriptions();
       setFilteredItems(itemlist);
+      cartCtx.changeRefreshItem(); // to ensure calendar screen calls api again
       Alert.alert('Success', 'Product unsubscribed!');
       //closeModal();
     } catch (error) {
@@ -137,8 +133,7 @@ function MySubscriptionScreen() {
     } finally {
       console.log('Finally');
     }
-    
-  }//modal
+  } //modal
 
   const handleLayout = () => {
     // fetchItems ? null : setFilteredItems(itemsList);
@@ -172,7 +167,7 @@ function MySubscriptionScreen() {
         setTimeslot={setTimeslot}
         selectedItem={selectedItem}
         handleConfirm={handleConfirm}
-        handleUnSubscribe = {handleUnSubscribe}
+        handleUnSubscribe={handleUnSubscribe}
         tomorrowDate={tomorrowDate}
         endDate={endDate}
       />

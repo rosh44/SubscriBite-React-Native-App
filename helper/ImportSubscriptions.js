@@ -28,7 +28,7 @@ const ImportSubscriptions = async () => {
       sub_start_date: item.sub_start_date,
       sub_end_date: item.sub_end_date,
       freq: item.freq,
-      time_slot_id: item.time_slot_id
+      time_slot_id: item.time_slot_id,
     }));
     // console.log(items);
      // Sort the items by itemid and frequency

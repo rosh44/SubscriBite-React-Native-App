@@ -46,10 +46,11 @@ function ItemList({ handleItemPress, filteredItems }) {
           <Text style={styles.itemPrice}>{`$${item.price.toFixed(2)}`}</Text>
           <Text style={styles.itemQuantity}>{item.quantity}</Text>
           {isInCart ? (
-            <Text style={styles.inputLabel}>
-              {sub.quantity} every {sub.frequency} days in the{' '}
-              {TimeEnum[sub.timeslot]} slot
-            </Text>
+            // <Text style={styles.inputLabel}>
+            //   {sub.quantity} every {sub.frequency} days in the{' '}
+            //   {TimeEnum[sub.timeslot]} slot
+            // </Text>
+            <Text>You have subscribed to this item!</Text>
           ) : null}
         </View>
       </TouchableOpacity>

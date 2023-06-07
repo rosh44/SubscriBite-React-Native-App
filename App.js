@@ -1,5 +1,8 @@
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
-import { createNativeStackNavigator, StackActions} from '@react-navigation/native-stack';
+import {
+  createNativeStackNavigator,
+  StackActions,
+} from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useContext, useEffect, useState } from 'react';
@@ -17,8 +20,7 @@ import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import IconButton from './components/ui/IconButton';
 import * as SplashScreen from 'expo-splash-screen';
 
-
-// SplashScreen.preventAutoHideAsync();
+SplashScreen.preventAutoHideAsync();
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -27,9 +29,7 @@ const RenderAccountScreenNavigation = ({ navigation }) => (
   <AccountScreen navigation={navigation} />
 );
 
-
-
-const BottomTabNavigation = ({navigation}) => {
+const BottomTabNavigation = ({ navigation }) => {
   const authCtx = useContext(AuthContext);
   //const navigation = useNavigation();
 
@@ -83,7 +83,7 @@ const BottomTabNavigation = ({navigation}) => {
         options={{
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name='account' color={color} size={size} />
-          )//,headerShown: false 
+          ), //,headerShown: false
         }}
       />
     </BottomTab.Navigator>
@@ -95,8 +95,6 @@ const RenderBottomTabNavigation = ({ navigation }) => (
 );
 
 const HomeScreenStack = () => {
- 
-
   return (
     <Stack.Navigator
       initialRouteName='HomeScreen'
@@ -152,9 +150,9 @@ function AuthenticatedStack() {
     fetchRegistered();
   }, []);
 
-const RenderHomeScreenStack = () => (
-<HomeScreenStack navigation={navigation} />
-);
+  const RenderHomeScreenStack = () => (
+    <HomeScreenStack navigation={navigation} />
+  );
 
   return (
     <Stack.Navigator

@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import FlatButton from '../ui/FlatButton';
 import AuthForm from './AuthForm';
 import { Colors } from '../../constants/styles';
+import * as SplashScreen from 'expo-splash-screen';
 
 function AuthContent({ isLogin, onAuthenticate }) {
   //isLogin: set as False for signup screen, set as True for login screens
@@ -54,9 +55,12 @@ function AuthContent({ isLogin, onAuthenticate }) {
     }
     onAuthenticate({ email, password });
   }
+  const handleLayout = () => {
+    SplashScreen.hideAsync();
+  };
 
   return (
-    <View style={styles.authContent}>
+    <View style={styles.authContent} onLayout={handleLayout}>
       <AuthForm
         isLogin={isLogin}
         onSubmit={submitHandler}
