@@ -166,6 +166,14 @@ function AuthenticatedStack() {
         <Stack.Screen
           name='Profile Details'
           component={UserDetailScreen}
+          initialParams={{ userDetails: [{
+            "id": "",
+            "firstname": "",
+            "lastname": "",
+            "phone_number": "",
+            "email_address": "",
+            "address": ""
+           }]}}
           // options={{
           //   headerRight: ({ tintColor }) => {
           //     <IconButton

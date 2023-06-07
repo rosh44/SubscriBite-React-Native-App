@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef } from 'react';
+import React, { useState, useContext, useRef,useEffect } from 'react';
 import {
   Alert,
   View,
@@ -15,18 +15,31 @@ import Input from '../components/Auth/Input';
 import { Colors } from '../constants/styles';
 import PhoneInput from 'react-native-phone-input';
 
-function UserDetailScreen() {
+function UserDetailScreen({route}) {
+  
+  const { userDetails } = route.params;
+  console.log("userdetails",userDetails);
+
   const authCtx = useContext(AuthContext);
   const navigation = useNavigation();
   const phoneInputRef = useRef(null);
 
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [streetAddress, setStreetAddress] = useState('');
-  const [apartmentNumber, setApartmentNumber] = useState('');
+  useEffect(() => {
+    if (userDetails) {
+      phoneInputRef.current.setValue(userDetails[0].phone_number);
+    }
+  }, [userDetails]);
 
-  const [zipCode, setZipCode] = useState('');
-  const [city, setCity] = useState('');
+  const splitAddr = (userDetails[0].address).split(',');
+  console.log(splitAddr); 
+
+  const [firstName, setFirstName] = useState(userDetails[0].firstname);
+  const [lastName, setLastName] = useState(userDetails[0].lastname);
+  const [streetAddress, setStreetAddress] = useState(splitAddr[1]);
+  const [apartmentNumber, setApartmentNumber] = useState(splitAddr[0]);
+
+  const [zipCode, setZipCode] = useState(splitAddr[3]);
+  const [city, setCity] = useState(splitAddr[2]);
 
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -51,23 +64,23 @@ function UserDetailScreen() {
 
     const phnNoIsValid = /^\+?[0-9]{10,13}$/.test(phoneNumber);
     const zipCodeIsValid = zipCodeTrimmed.match(/^[0-9]+$/);
-    const fNameIsValid = fNameTrimmed.length != 0;
-    const lNameIsValid = lNameTrimmed.length != 0;
-    const streetAddrIsValid = streetAddrTrimmed.length != 0;
-    const aptNoIsValid = aptNoTrimmed.length != 0;
-    const cityIsValid = cityTrimmed.length != 0;
+    const fNameIsValid = fNameTrimmed.length != 0 && fNameTrimmed.match(/^[A-Za-z0-9\s]+$/);
+    const lNameIsValid = lNameTrimmed.length != 0 && lNameTrimmed.match(/^[A-Za-z0-9\s]+$/);;
+    const streetAddrIsValid = streetAddrTrimmed.length != 0 && streetAddrTrimmed.match(/^[A-Za-z0-9\s]+$/);; 
+    const aptNoIsValid = aptNoTrimmed.length != 0 && aptNoTrimmed.match(/^[A-Za-z0-9\s]+$/);;
+    const cityIsValid = cityTrimmed.length != 0 && cityTrimmed.match(/^[A-Za-z0-9\s]+$/);;
 
     setFNameInvalid(!fNameIsValid);
 
     if (!fNameIsValid) {
-      Alert.alert('Invalid Input', 'Enter First Name');
+      Alert.alert('Invalid Input', 'Enter First Name with no special characters');
       return false;
     }
 
     setLNameInvalid(!lNameIsValid);
 
     if (!lNameIsValid) {
-      Alert.alert('Invalid Input', 'Enter Last Name');
+      Alert.alert('Invalid Input', 'Enter Last Name with no special characters');
       return false;
     }
 
@@ -81,21 +94,21 @@ function UserDetailScreen() {
     setStreetAddrInvalid(!streetAddrIsValid);
 
     if (!streetAddrIsValid) {
-      Alert.alert('Invalid Input', 'Enter Street Address');
+      Alert.alert('Invalid Input', 'Enter Street Address with no special characters');
       return false;
     }
 
     setAptNoInvalid(!aptNoIsValid);
 
     if (!aptNoIsValid) {
-      Alert.alert('Invalid Input', 'Enter Apartment No.');
+      Alert.alert('Invalid Input', 'Enter Apartment No. with no special characters');
       return false;
     }
 
     setCityInvalid(!cityIsValid);
 
     if (!cityIsValid) {
-      Alert.alert('Invalid Input', 'Enter City');
+      Alert.alert('Invalid Input', 'Enter City with no special characters');
       return false;
     }
 
@@ -108,11 +121,51 @@ function UserDetailScreen() {
 
     return true;
   }
+  async function updateUser() {
+
+    console.log("in update user");
+    setIsLoading(true);
+    setIsSuccess(false);
+    setIsError(false);
+      try{
+        const formattedPhoneNumber = phoneInputRef.current.getValue();
+
+        console.log('PHONE NUMBER=', formattedPhoneNumber);
+      const response = await axios.post(
+        'http://dev-lb-subscribite-234585004.us-west-2.elb.amazonaws.com/users/updateInfo',
+        {
+          first_name: firstName.trim(),
+          last_name: lastName.trim(),
+          phone_number: formattedPhoneNumber.trim(),
+          user_id: 163,
+          address: apartmentNumber.trim() + ", " + streetAddress.trim() + ", "  + city.trim() + ", " + zipCode.trim(),
+        }
+      );
+      console.log('Status:', response.data);
+      setIsSuccess(true);
+      Alert.alert('Success', 'Profile updated!');
+      navigation.replace('Account1');      
+    } catch (error) {
+      console.error('Error:', error);
+      setIsError(true);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
 
   async function handleSubmit() {
     const isValid = validate();
 
+
     if (isValid) {
+
+      console.log("id=",userDetails[0].id)
+      if(!(userDetails[0].id == "")){
+          updateUser();
+      }
+      else{
+      console.log("in insert user");
       setIsLoading(true);
       setIsSuccess(false);
       setIsError(false);
@@ -148,7 +201,10 @@ function UserDetailScreen() {
         setIsLoading(false);
       }
     }
+    }
 
+    console.log("In user detail screen");
+  }
     return (
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -226,7 +282,7 @@ function UserDetailScreen() {
         </ScrollView>
       </KeyboardAvoidingView>
     );
-  }
+  
 }
 export default UserDetailScreen;
 

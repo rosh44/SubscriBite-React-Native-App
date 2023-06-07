@@ -58,7 +58,7 @@ function ItemList({ handleItemPress, filteredItems }) {
   };
 
   return (
-    <FlatList
+    <FlatList 
       data={filteredItems}
       keyExtractor={(item) => item.id.toString()}
       renderItem={renderItem}
@@ -96,5 +96,5 @@ const styles = StyleSheet.create({
   itemQuantity: {
     fontSize: 12,
     color: 'gray',
-  },
+  }
 });

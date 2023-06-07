@@ -3,10 +3,13 @@ import { AuthContext } from '../store/auth-context';
 import { useContext , useState, useEffect} from 'react';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import SuggestProductScreen from './SuggestProductScreen';
+import ContactScreen from './ContactScreen';
 import MySubscriptionScreen from './MySubscriptionScreen';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Colors } from '../constants/styles';
 import axios from 'axios';
+import { useNavigation } from '@react-navigation/native';
+import UserDetailScreen from './UserDetailScreen';
 
 const accountOptions = [
   // {
@@ -46,7 +49,7 @@ const accountOptions = [
   },
   {
 	  key: "8",
-	  text: "Help / FAQ",
+	  text: "Help / Contact Us",
     icon: "help-circle-outline"
   }
 ];
@@ -61,7 +64,7 @@ function AccountScreen({navigation}) {
    
    const authCtx = useContext(AuthContext);
    const name = authCtx.name;
-
+   const navigation1 = useNavigation();
    const [userDetails, setUserDetails] = useState([{
     "id": "",
     "firstname": "Hello",
@@ -102,13 +105,17 @@ function AccountScreen({navigation}) {
       navigation.navigate('Suggest a Product');
     } 
     else if (item.key === "3") {
-      navigation.navigate('My Subsciptions');
+      navigation.navigate('My Subscriptions');
+    }
+    else if (item.key === "8") {
+      navigation.navigate('Help / Contact Us');
     }
     // Add more conditions for other screens
   };
 
   function handleEditProfile() {
-
+    //navigation1.navigate('Edit Profile');
+    navigation.navigate('Edit Profile', { userDetails: userDetails });
   }
 
   return (
@@ -129,8 +136,6 @@ function AccountScreen({navigation}) {
              </TouchableOpacity>
              </View>
            </View>
-
-          {/* <Text style={styles.profileNameText}>{userDetails[0].firstname + " " + userDetails[0].lastname}</Text> */}
           <Text style={styles.profileText}>{userDetails[0].phone_number}</Text>
           <Text style={styles.profileText}>{userDetails[0].email_address}</Text>
         </View>
@@ -146,13 +151,11 @@ function AccountScreen({navigation}) {
         data = {accountOptions}
         renderItem = {({ item }) => (
           <TouchableOpacity onPress={() => handleItemPress(item)}>
-            <View>
-              <Text style={styles.listOptions}> 
-              <MaterialCommunityIcons name={item.icon} size={32} color="black"/>
-              {"   "}
-              {item.text} </Text>
+            <View style={styles.listOptions}>
+            <MaterialCommunityIcons name={item.icon} size={32} color="black" />
+            <Text style={styles.listText}>{item.text}</Text>
             </View>
-            </TouchableOpacity>
+          </TouchableOpacity>
           )}
         ItemSeparatorComponent={myItemSeparator}
         alwaysBounceVertical = {false}
@@ -164,6 +167,7 @@ function AccountScreen({navigation}) {
 }
 
 function AccountStack({navigation}) {
+
   return (
     <Stack.Navigator>
       <Stack.Screen 
@@ -175,11 +179,17 @@ function AccountStack({navigation}) {
       name="Suggest a Product" component={SuggestProductScreen} />
       <Stack.Screen 
       //options={{ headerShown: false }}
-      name="My Subsciptions" component={MySubscriptionScreen} 
+      name="My Subscriptions" component={MySubscriptionScreen} 
       initialParams={{
         api: 'http://dev-lb-subscribite-234585004.us-west-2.elb.amazonaws.com',
         userId: 163, //TODO: make userid dynamic
       }}/>
+       <Stack.Screen 
+      //options={{ headerShown: false }}
+      name="Help / Contact Us" component={ContactScreen} />
+       <Stack.Screen 
+      options={{ headerShown: false }}
+      name="Edit Profile" component={UserDetailScreen} />
       {/* Add more screens to the account stack */}
     </Stack.Navigator>
   );
@@ -207,7 +217,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginTop: 6,
     fontWeight: "bold",
-    padding: 10
+    paddingVertical: 15,
+    paddingHorizontal: 15,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   profileContainer: {
     flexDirection: 'row',
@@ -274,8 +287,11 @@ const styles = StyleSheet.create({
   editButtonContainer: {
     flex: 1,
     alignItems: 'flex-end',
-    paddingRight: 50,
   },
-  
+  listText: {
+    marginLeft: 15,
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
   
 });
