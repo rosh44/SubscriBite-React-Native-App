@@ -121,7 +121,7 @@ function HomeScreen() {
     };
     // console.log(` ${fromDate} -- ${toDate}`);
 
-    // console.log(`Sending request to backend: ${add_subscription_request}`);
+    console.log('Sending request to backend:',add_subscription_request);
     try {
       const response = await axios.post(
         'http://dev-lb-subscribite-234585004.us-west-2.elb.amazonaws.com/subscriptions/subscribe',
