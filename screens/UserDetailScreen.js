@@ -128,9 +128,11 @@ function UserDetailScreen() {
             firstname: firstName.trim(),
             lastname: lastName.trim(),
             phone_number: formattedPhoneNumber.trim(),
+            // user_id: 163,
+            // address: apartmentNumber + ", " + streetAddress + ", " +  + city + ", " + zipCode,
           }
         );
-        // console.log('Status:', response.status);
+        console.log('Status:', response.data);
         setIsSuccess(true);
         //after success, I want to store the name of the user in the React Store and also set the user as a registered user
         authCtx.setUserDetails(firstName);

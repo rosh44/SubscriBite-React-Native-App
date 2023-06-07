@@ -84,7 +84,7 @@ function SuggestProductScreen() {
     setFreqInvalid(!freqIsValid);
 
     if (!freqIsValid) {
-      Alert.alert('Invalid Input', 'Select Product Usage Frequecy');
+      Alert.alert('Invalid Input', 'Select Product Usage Frequency');
       return false;
     }
 
