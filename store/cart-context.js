@@ -8,6 +8,7 @@ export const CartContext = createContext({
   userId: '',
   subscriptions: [],
   addSubscription: () => {},
+  setSubscriptionsInitially: () => {},
   refreshItem: 0,
   changeRefreshItem: () => {},
 });
@@ -30,15 +31,20 @@ function CartContextProvider({ children }) {
   }
   function addSubscription(subscription) {
     const myObject = JSON.stringify(subscription);
-    // console.log(`Received subscription: ${myObject}`);
+    console.log(`Received subscription: ${myObject}`);
     setSubscriptions([...subscriptions, subscription]);
     // console.log(`Set subscription: ${subscriptions}`);
+  }
+  function setSubscriptionsInitially(subscriptions_list) {
+    // this function will set the initial list of subscriptions
+    setSubscriptions([...subscriptions_list]);
   }
   // now create a value object that associates the created values with the context object
   const value = {
     userId: userId,
     subscriptions: subscriptions,
     addSubscription: addSubscription,
+    setSubscriptionsInitially: setSubscriptionsInitially,
     refreshItem: refreshItem,
     changeRefreshItem: changeRefreshItem,
   };

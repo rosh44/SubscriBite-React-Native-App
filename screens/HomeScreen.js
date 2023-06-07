@@ -10,10 +10,14 @@ import AddItemModal from '../components/AddItemModal';
 import FilterBar from '../components/FilterBar';
 import * as SplashScreen from 'expo-splash-screen';
 import ImportItems from '../helper/ImportItems';
+import ImportSubscriptions from '../helper/ImportSubscriptions';
+
 import { itemsList } from '../helper/ImportItems';
 
 function HomeScreen() {
   const [fetchItems, setFetchItems] = useState(true);
+  const authCtx = useContext(AuthContext);
+  const cartCtx = useContext(CartContext);
   useEffect(() => {
     // console.log('In home screen use efect');
     async function getItemsFromBackend() {
@@ -24,8 +28,23 @@ function HomeScreen() {
     getItemsFromBackend();
   }, []);
 
-  const authCtx = useContext(AuthContext);
-  const cartCtx = useContext(CartContext);
+  useEffect(() => {
+    // console.log('In home screen use efect');
+    async function getSubscriptionsFromBackend() {
+      const subscriptionsList = await ImportSubscriptions();
+      // now store these subscriptions in react store
+      // setFilteredItems(itemlist);
+      const toStoreList = subscriptionsList.map((item) => ({
+        user_id: 163,
+        item_id: item.id,
+        frequency: item.freq,
+        quantity: item.item_quantity,
+        timeslot: item.time_slot_id,
+      }));
+      cartCtx.setSubscriptionsInitially(toStoreList);
+    }
+    getSubscriptionsFromBackend();
+  }, []);
 
   const currentDate = new Date();
   const tomorrowDate = new Date(currentDate);
@@ -121,7 +140,7 @@ function HomeScreen() {
     };
     // console.log(` ${fromDate} -- ${toDate}`);
 
-    console.log('Sending request to backend:',add_subscription_request);
+    console.log('Sending request to backend:', add_subscription_request);
     try {
       const response = await axios.post(
         'http://dev-lb-subscribite-234585004.us-west-2.elb.amazonaws.com/subscriptions/subscribe',
