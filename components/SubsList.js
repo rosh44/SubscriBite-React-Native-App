@@ -46,7 +46,7 @@ import {
     };
   
     return (
-      <FlatList
+      <FlatList 
         data={filteredItems}
         keyExtractor={(item) => item.subs_id.toString()}
         renderItem={renderItem}

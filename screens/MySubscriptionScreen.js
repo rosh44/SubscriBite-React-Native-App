@@ -8,7 +8,6 @@ import SubsList from '../components/SubsList';
 import AddSubsModal from '../components/AddSubsModal';
 import * as SplashScreen from 'expo-splash-screen';
 import ImportSubscriptions from '../helper/ImportSubscriptions';
-import { itemsList } from '../helper/ImportSubscriptions';
 
 function MySubscriptionScreen() {
   const [fetchItems, setFetchItems] = useState(true);
@@ -148,10 +147,15 @@ function MySubscriptionScreen() {
   const name = authCtx.name;
   return (
     <View onLayout={handleLayout}>
+      <View style={styles.container}>
+        <Text style={styles.updateText}> Tap on the item to Update or Unsubscribe </Text>
+      </View>
+      <View style={styles.listContainer}>
       <SubsList
         handleItemPress={handleItemPress}
         filteredItems={filteredItems}
       />
+      </View>
       <AddSubsModal
         modalVisible={modalVisible}
         closeModal={closeModal}
@@ -175,5 +179,20 @@ function MySubscriptionScreen() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#f0f0f0',
+    padding: 10,
+  },
+  updateText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  listContainer:{
+    paddingBottom:100
+  }
+});
 
 export default MySubscriptionScreen;

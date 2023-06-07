@@ -31,6 +31,23 @@ const ImportSubscriptions = async () => {
       time_slot_id: item.time_slot_id
     }));
     // console.log(items);
+     // Sort the items by itemid and frequency
+     items.sort((a, b) => {
+      if (a.id < b.id) {
+        return -1;
+      } else if (a.id > b.id) {
+        return 1;
+      } else {
+        // If itemid is the same, sort by frequency
+        if (a.freq < b.freq) {
+          return -1;
+        } else if (a.freq > b.freq) {
+          return 1;
+        } else {
+          return 0;
+        }
+      }
+    });
   } catch (error) {
     console.log(error);
   }

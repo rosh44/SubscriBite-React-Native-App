@@ -188,6 +188,7 @@ import {
                 </TouchableOpacity>
               </View>
 
+              <View style={styles.buttonContainer1}>
               <TouchableOpacity onPress={handleUnSubscribe} style={styles.unSubscribeButton}>
                 <Text style={styles.confirmButtonText}>Unsubscribe?</Text>
                 </TouchableOpacity>
@@ -195,6 +196,7 @@ import {
               <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
               <Text style={styles.confirmButtonText}>Close</Text>
               </TouchableOpacity>
+              </View>
             </View>
           </View>
         </Modal>
@@ -209,7 +211,7 @@ import {
       flex: 1,
       backgroundColor: Colors.primary100,
       padding: 16,
-      marginTop: '60%',
+      marginTop: '75%',
     },
     quantityContainer: {
       flexDirection: 'row',
@@ -269,12 +271,13 @@ import {
       minWidth: 160,
     },
     unSubscribeButton: {
-      backgroundColor: Colors.primary800,
+      backgroundColor: "#F05254",
       padding: 12,
       borderRadius: 8,
       alignItems: 'center',
       minWidth: 160,
       marginTop: 20,
+      marginRight: 20,
     },
     confirmButtonText: {
       color: 'white',
@@ -289,6 +292,7 @@ import {
       alignItems: 'center',
       minWidth: 160,
       marginTop: 20,
+
     },
     buttonContainer: {
       flexDirection: 'column',
@@ -306,6 +310,7 @@ import {
       fontWeight: 'bold',
       color: Colors.primary800, // Blue color (you can adjust the color to your preference)
       margin: 10,
+      paddingRight: 20
     },
     absoluteFill: {
       position: 'absolute',
@@ -313,6 +318,12 @@ import {
       left: 0,
       right: 0,
       bottom: 0,
+    },
+    buttonContainer1: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      marginTop: 0,
+      
     },
   });
   
