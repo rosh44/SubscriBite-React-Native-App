@@ -98,8 +98,9 @@ function MySubscriptionScreen() {
       console.log('update subs res:', response.data);
       const itemlist = await ImportSubscriptions();
       setFilteredItems(itemlist);
-      // cartCtx.changeRefreshItem(); // to ensure calendar screen calls api again
+      cartCtx.changeRefreshItem(); // to ensure calendar screen calls api again
       Alert.alert('Success', 'Subscription updated!');
+      closeModal();
     } catch (error) {
       console.log(error);
     } finally {
