@@ -40,6 +40,7 @@ function HomeScreen() {
         frequency: item.freq,
         quantity: item.item_quantity,
         timeslot: item.time_slot_id,
+        sub_id: item.subs_id,
       }));
       cartCtx.setSubscriptionsInitially(toStoreList);
     }
@@ -152,15 +153,31 @@ function HomeScreen() {
         }
       );
       // console.log(`Current Subscriptions: ${cartCtx.subscriptions}`);
-
+      // now fetch the subscription ID
+      const res = await axios.post(
+        'http://dev-lb-subscribite-234585004.us-west-2.elb.amazonaws.com/subscriptions/getLatest',
+        {
+          user_id: 163,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      const added_subscription_id = res.data[0].subscription_id;
+      // console.log(
+      //   `Added sub id: ${JSON.stringify(added_subscription_id}`
+      // );
       const store_subscription = {
         user_id: 163,
         item_id: selectedItem.id,
         frequency: parseInt(frequency),
         quantity: quantity,
         timeslot: timeslot,
+        sub_id: added_subscription_id,
       };
-      // console.log(`Subscription to be stored: ${store_subscription}`);
+      console.log(`Subscription to be stored: ${store_subscription}`);
 
       cartCtx.addSubscription(store_subscription);
       cartCtx.changeRefreshItem();

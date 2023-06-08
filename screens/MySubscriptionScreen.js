@@ -84,7 +84,7 @@ function MySubscriptionScreen() {
       quantity: quantity,
       slot: timeslot,
     };
-    console.log('update subs req:', upd_subscription_request);
+    // console.log('update subs req:', upd_subscription_request);
     try {
       const response = await axios.put(
         'http://dev-lb-subscribite-234585004.us-west-2.elb.amazonaws.com/subscriptions/subscribe',
@@ -103,12 +103,12 @@ function MySubscriptionScreen() {
     } catch (error) {
       console.log(error);
     } finally {
-      console.log('Finally');
+      // console.log('Finally');
     }
   } // modal
 
   async function handleUnSubscribe() {
-    console.log('sub_id', selectedItem.subs_id);
+    // console.log('sub_id', selectedItem.subs_id);
     const unsubscribe_request = {
       sub_id: '' + selectedItem.subs_id,
     };
@@ -126,12 +126,15 @@ function MySubscriptionScreen() {
       const itemlist = await ImportSubscriptions();
       setFilteredItems(itemlist);
       cartCtx.changeRefreshItem(); // to ensure calendar screen calls api again
+      // remove from store to ensure home screen does not display item (if there are more subscriptions, it should not remove them though)
+
+      cartCtx.removeSubscription(selectedItem.subs_id);
       Alert.alert('Success', 'Product unsubscribed!');
-      //closeModal();
+      closeModal();
     } catch (error) {
       console.log(error);
     } finally {
-      console.log('Finally');
+      // console.log('Finally');
     }
   } //modal
 
@@ -143,13 +146,16 @@ function MySubscriptionScreen() {
   return (
     <View onLayout={handleLayout}>
       <View style={styles.container}>
-        <Text style={styles.updateText}> Tap on the item to Update or Unsubscribe </Text>
+        <Text style={styles.updateText}>
+          {' '}
+          Tap on the item to Update or Unsubscribe{' '}
+        </Text>
       </View>
       <View style={styles.listContainer}>
-      <SubsList
-        handleItemPress={handleItemPress}
-        filteredItems={filteredItems}
-      />
+        <SubsList
+          handleItemPress={handleItemPress}
+          filteredItems={filteredItems}
+        />
       </View>
       <AddSubsModal
         modalVisible={modalVisible}
@@ -185,9 +191,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
   },
-  listContainer:{
-    paddingBottom:100
-  }
+  listContainer: {
+    paddingBottom: 100,
+  },
 });
 
 export default MySubscriptionScreen;

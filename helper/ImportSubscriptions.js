@@ -4,7 +4,7 @@ import { useState } from 'react';
 export let itemsList = [];
 const ImportSubscriptions = async () => {
   let items = [];
-  console.log('Importing items...');
+  // console.log('Importing items...');
   const url =
     'http://dev-lb-subscribite-234585004.us-west-2.elb.amazonaws.com/subscriptions/getSubscriptions';
   const request_data = {
@@ -31,8 +31,8 @@ const ImportSubscriptions = async () => {
       time_slot_id: item.time_slot_id,
     }));
     // console.log(items);
-     // Sort the items by itemid and frequency
-     items.sort((a, b) => {
+    // Sort the items by itemid and frequency
+    items.sort((a, b) => {
       if (a.id < b.id) {
         return -1;
       } else if (a.id > b.id) {
