@@ -13,12 +13,17 @@ import Icon from 'react-native-vector-icons/Feather';
 import IncDecButton from '../ui/IncDecButton';
 import LeftRight from '../ui/LeftRight';
 
-const movement = ['6 AM - 8 AM', '11 AM - 1 PM', '4 PM - 6 PM', '9 PM - 11 PM'];
+const movement = [
+  'Morning (6 AM - 8 AM)',
+  'Noon (11 AM - 1 PM)',
+  'Evening (4 PM - 6 PM)',
+  'Night (9 PM - 11 PM)',
+];
 const movement_mapper = {
-  '6 AM - 8 AM': 1,
-  '11 AM - 1 PM': 2,
-  '4 PM - 6 PM': 3,
-  '9 PM - 11 PM': 4,
+  'Morning (6 AM - 8 AM)': 1,
+  'Noon (11 AM - 1 PM)': 2,
+  'Evening (4 PM - 6 PM)': 3,
+  'Night (9 PM - 11 PM)': 4,
 };
 
 const SubscriptionList = (props) => {
@@ -156,12 +161,14 @@ const SubscriptionList = (props) => {
                     parentUpdateFunc={IncDecUpdate}
                     style={{ padding: 0 }}
                   />
-                  <LeftRight
-                    slotValue={item.time_slot_description}
-                    movement={movement}
-                    uniqueId={item.id}
-                    parentUpdateFunc={LeftRightUpdate}
-                  />
+                  <View>
+                    <LeftRight
+                      slotValue={item.time_slot_description}
+                      movement={movement}
+                      uniqueId={item.id}
+                      parentUpdateFunc={LeftRightUpdate}
+                    />
+                  </View>
                 </View>
               </View>
             </View>
@@ -308,8 +315,8 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
   },
   imageView: {
-    width: 300,
-    height: 300,
+    width: 250,
+    height: 250,
     resizeMode: 'contain',
     alignSelf: 'center',
   },
