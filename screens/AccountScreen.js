@@ -15,8 +15,10 @@ import MySubscriptionScreen from './MySubscriptionScreen';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Colors } from '../constants/styles';
 import axios from 'axios';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, StackActions } from '@react-navigation/native';
 import UserDetailScreen from './UserDetailScreen';
+import PaymentScreen from './PaymentScreen';
+import PastOrdersScreen from './PastOrdersScreen';
 
 const accountOptions = [
   // {
@@ -35,19 +37,20 @@ const accountOptions = [
     icon: 'calendar-month',
   },
   {
-    key: '4',
-    text: 'Orders',
-    icon: 'cart',
+	  key: "4",
+	  text: "Past Orders",
+    icon: "cart"
   },
+  // {
+	//   key: "5",
+	//   text: "Manage Notifications",
+  //   icon: "bell"
+  // },
   {
-    key: '5',
-    text: 'Manage Notifications',
-    icon: 'bell',
-  },
-  {
-    key: '6',
-    text: 'Payments',
-    icon: 'currency-usd',
+	  key: "6",
+	  text: "My Payments",
+    icon: "currency-usd"
+
   },
   {
     key: '7',
@@ -108,6 +111,7 @@ function AccountScreen({ navigation }) {
       }
     };
 
+
     fetchUserDetails();
   }, []);
 
@@ -120,6 +124,12 @@ function AccountScreen({ navigation }) {
     } else if (item.key === '8') {
       navigation.navigate('Help / Contact Us');
     }
+    else if (item.key === "6") {
+      navigation.navigate('My Payments', { userDetails: userDetails });
+    }
+    else if (item.key === "4") {
+      navigation.navigate('Past Orders');
+    }
     // Add more conditions for other screens
   };
 
@@ -127,6 +137,8 @@ function AccountScreen({ navigation }) {
     //navigation1.navigate('Edit Profile');
     navigation.navigate('Edit Profile', { userDetails: userDetails });
   }
+
+ 
 
   return (
     <View style={styles.container}>
@@ -181,7 +193,16 @@ function AccountScreen({ navigation }) {
   );
 }
 
+
 function AccountStack({ navigation }) {
+        useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      navigation.dispatch(StackActions.replace('Account1'));
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+        
   const authCtx = useContext(AuthContext);
 
   return (
@@ -205,16 +226,19 @@ function AccountStack({ navigation }) {
           userId: authCtx.localId, //TODO: make userid dynamic
         }}
       />
-      <Stack.Screen
-        //options={{ headerShown: false }}
-        name='Help / Contact Us'
-        component={ContactScreen}
-      />
-      <Stack.Screen
-        options={{ headerShown: false }}
-        name='Edit Profile'
-        component={UserDetailScreen}
-      />
+      <Stack.Screen 
+      //options={{ headerShown: false }}
+      name="Help / Contact Us" component={ContactScreen} />
+       <Stack.Screen 
+      //options={{ headerShown: false }}
+      name="Edit Profile" component={UserDetailScreen} />
+      <Stack.Screen 
+      //options={{ headerShown: false }}
+      name="My Payments" component={PaymentScreen} />
+       <Stack.Screen 
+      //options={{ headerShown: false }}
+      name="Past Orders" component={PastOrdersScreen} />
+
       {/* Add more screens to the account stack */}
     </Stack.Navigator>
   );
