@@ -194,7 +194,6 @@ function HomeScreen() {
         sub_id: added_subscription_id,
       };
       // console.log(`Subscription to be stored: ${store_subscription}`);
-      Alert.alert('Success', 'Added Subscription!');
       cartCtx.addSubscription(store_subscription);
       cartCtx.changeRefreshItem();
       // console.log(`Current Subscriptions: ${cartCtx.subscriptions}`);
@@ -208,6 +207,8 @@ function HomeScreen() {
     }
     // Update the value within the items screen
     // updateValue(item.id, quantity);
+    Alert.alert('Success', 'Added Subscription!');
+
     setSelectedItem(null);
     setModalVisible(false);
     setFrequency('1');
