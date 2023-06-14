@@ -8,8 +8,10 @@ import MySubscriptionScreen from './MySubscriptionScreen';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Colors } from '../constants/styles';
 import axios from 'axios';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, StackActions } from '@react-navigation/native';
 import UserDetailScreen from './UserDetailScreen';
+import PaymentScreen from './PaymentScreen';
+import PastOrdersScreen from './PastOrdersScreen';
 
 const accountOptions = [
   // {
@@ -29,17 +31,17 @@ const accountOptions = [
   },
   {
 	  key: "4",
-	  text: "Orders",
+	  text: "Past Orders",
     icon: "cart"
   },
-  {
-	  key: "5",
-	  text: "Manage Notifications",
-    icon: "bell"
-  },
+  // {
+	//   key: "5",
+	//   text: "Manage Notifications",
+  //   icon: "bell"
+  // },
   {
 	  key: "6",
-	  text: "Payments",
+	  text: "My Payments",
     icon: "currency-usd"
   },
   {
@@ -61,7 +63,9 @@ const myItemSeparator = () => {
 const Stack = createNativeStackNavigator();
 
 function AccountScreen({navigation}) {
-   
+  
+  
+
    const authCtx = useContext(AuthContext);
    const name = authCtx.name;
    const navigation1 = useNavigation();
@@ -89,8 +93,11 @@ function AccountScreen({navigation}) {
            },
          });
          console.log("user data:",response.data);
-         setUserDetails(response.data);
-         console.log("user name:",userDetails[0].firstname);
+         console.log("user data length:",response.data.length);
+         if(response.data.length != 0){
+          setUserDetails(response.data);
+         }
+         //console.log("user name:",userDetails[0].firstname);
        } catch (error) {
          console.error('Error fetching user details:', error);
        }
@@ -110,6 +117,12 @@ function AccountScreen({navigation}) {
     else if (item.key === "8") {
       navigation.navigate('Help / Contact Us');
     }
+    else if (item.key === "6") {
+      navigation.navigate('My Payments', { userDetails: userDetails });
+    }
+    else if (item.key === "4") {
+      navigation.navigate('Past Orders');
+    }
     // Add more conditions for other screens
   };
 
@@ -117,6 +130,8 @@ function AccountScreen({navigation}) {
     //navigation1.navigate('Edit Profile');
     navigation.navigate('Edit Profile', { userDetails: userDetails });
   }
+
+ 
 
   return (
     <View style={styles.container}>
@@ -167,11 +182,18 @@ function AccountScreen({navigation}) {
 }
 
 function AccountStack({navigation}) {
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      navigation.dispatch(StackActions.replace('Account1'));
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   return (
     <Stack.Navigator>
       <Stack.Screen 
-     options={{ headerShown: false }}
+      options={{ headerShown: false }}
       name="Account1" component={AccountScreen} 
       />
       <Stack.Screen 
@@ -188,8 +210,14 @@ function AccountStack({navigation}) {
       //options={{ headerShown: false }}
       name="Help / Contact Us" component={ContactScreen} />
        <Stack.Screen 
-      options={{ headerShown: false }}
+      //options={{ headerShown: false }}
       name="Edit Profile" component={UserDetailScreen} />
+      <Stack.Screen 
+      //options={{ headerShown: false }}
+      name="My Payments" component={PaymentScreen} />
+       <Stack.Screen 
+      //options={{ headerShown: false }}
+      name="Past Orders" component={PastOrdersScreen} />
       {/* Add more screens to the account stack */}
     </Stack.Navigator>
   );
