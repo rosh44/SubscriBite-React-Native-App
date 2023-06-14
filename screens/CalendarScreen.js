@@ -51,6 +51,7 @@ function CalendarScreen({ route }) {
 
   useEffect(() => {
     const url = api + '/subscriptions/upcoming_orders';
+    console.log(`Calendar UID: ${userId}`);
     const data = { user_id: userId };
     fetch(url, {
       method: 'POST',

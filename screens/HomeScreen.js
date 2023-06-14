@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { AuthContext } from '../store/auth-context';
 import { CartContext } from '../store/cart-context';
 import { useState, useContext, useEffect } from 'react';
@@ -26,16 +26,13 @@ function HomeScreen() {
       setFilteredItems(itemlist);
     }
     getItemsFromBackend();
-  }, []);
-
-  useEffect(() => {
-    // console.log('In home screen use efect');
     async function getSubscriptionsFromBackend() {
-      const subscriptionsList = await ImportSubscriptions();
+      console.log('Now in HomeScreen: localId is: ', authCtx.localId);
+      const subscriptionsList = await ImportSubscriptions(authCtx.localId);
       // now store these subscriptions in react store
       // setFilteredItems(itemlist);
       const toStoreList = subscriptionsList.map((item) => ({
-        user_id: 163,
+        user_id: authCtx.localId,
         item_id: item.id,
         frequency: item.freq,
         quantity: item.item_quantity,
@@ -46,6 +43,25 @@ function HomeScreen() {
     }
     getSubscriptionsFromBackend();
   }, []);
+
+  // useEffect(() => {
+  //   // console.log('In home screen use efect');
+  //   async function getSubscriptionsFromBackend() {
+  //     const subscriptionsList = await ImportSubscriptions(authCtx.localId);
+  //     // now store these subscriptions in react store
+  //     // setFilteredItems(itemlist);
+  //     const toStoreList = subscriptionsList.map((item) => ({
+  //       user_id: authCtx.localId,
+  //       item_id: item.id,
+  //       frequency: item.freq,
+  //       quantity: item.item_quantity,
+  //       timeslot: item.time_slot_id,
+  //       sub_id: item.subs_id,
+  //     }));
+  //     cartCtx.setSubscriptionsInitially(toStoreList);
+  //   }
+  //   getSubscriptionsFromBackend();
+  // }, []);
 
   const currentDate = new Date();
   const tomorrowDate = new Date(currentDate);
@@ -131,7 +147,7 @@ function HomeScreen() {
 
   async function handleConfirm() {
     const add_subscription_request = {
-      user_id: 163,
+      user_id: authCtx.localId,
       item_id: selectedItem.id,
       sub_start_date: fromDate,
       sub_end_date: toDate,
@@ -141,7 +157,7 @@ function HomeScreen() {
     };
     // console.log(` ${fromDate} -- ${toDate}`);
 
-    console.log('Sending request to backend:', add_subscription_request);
+    // console.log('Sending request to backend:', add_subscription_request);
     try {
       const response = await axios.post(
         'http://dev-lb-subscribite-234585004.us-west-2.elb.amazonaws.com/subscriptions/subscribe',
@@ -157,7 +173,7 @@ function HomeScreen() {
       const res = await axios.post(
         'http://dev-lb-subscribite-234585004.us-west-2.elb.amazonaws.com/subscriptions/getLatest',
         {
-          user_id: 163,
+          user_id: authCtx.localId,
         },
         {
           headers: {
@@ -170,15 +186,15 @@ function HomeScreen() {
       //   `Added sub id: ${JSON.stringify(added_subscription_id}`
       // );
       const store_subscription = {
-        user_id: 163,
+        user_id: authCtx.localId,
         item_id: selectedItem.id,
         frequency: parseInt(frequency),
         quantity: quantity,
         timeslot: timeslot,
         sub_id: added_subscription_id,
       };
-      console.log(`Subscription to be stored: ${store_subscription}`);
-
+      // console.log(`Subscription to be stored: ${store_subscription}`);
+      Alert.alert('Success', 'Added Subscription!');
       cartCtx.addSubscription(store_subscription);
       cartCtx.changeRefreshItem();
       // console.log(`Current Subscriptions: ${cartCtx.subscriptions}`);
