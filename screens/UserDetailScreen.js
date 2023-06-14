@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef,useEffect } from 'react';
+import React, { useState, useContext, useRef, useEffect } from 'react';
 import {
   Alert,
   View,
@@ -14,24 +14,30 @@ import Button from '../components/ui/Button';
 import Input from '../components/Auth/Input';
 import { Colors } from '../constants/styles';
 import PhoneInput from 'react-native-phone-input';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SplashScreen from 'expo-splash-screen';
 
-function UserDetailScreen({route}) {
-  
+function UserDetailScreen({ route }) {
   const { userDetails } = route.params;
-  console.log("userdetails",userDetails);
+  console.log('userdetails', userDetails);
 
   const authCtx = useContext(AuthContext);
   const navigation = useNavigation();
   const phoneInputRef = useRef(null);
 
   useEffect(() => {
+    async function fetchRegistered() {
+      let localId = await AsyncStorage.getItem('localId');
+      console.log(localId);
+    }
+    fetchRegistered();
     if (userDetails) {
       phoneInputRef.current.setValue(userDetails[0].phone_number);
     }
   }, [userDetails]);
 
-  const splitAddr = (userDetails[0].address).split(',');
-  console.log(splitAddr); 
+  const splitAddr = userDetails[0].address.split(',');
+  console.log(splitAddr);
 
   const [firstName, setFirstName] = useState(userDetails[0].firstname);
   const [lastName, setLastName] = useState(userDetails[0].lastname);
@@ -64,23 +70,35 @@ function UserDetailScreen({route}) {
 
     const phnNoIsValid = /^\+?[0-9]{10,13}$/.test(phoneNumber);
     const zipCodeIsValid = zipCodeTrimmed.match(/^[0-9]+$/);
-    const fNameIsValid = fNameTrimmed.length != 0 && fNameTrimmed.match(/^[A-Za-z0-9\s]+$/);
-    const lNameIsValid = lNameTrimmed.length != 0 && lNameTrimmed.match(/^[A-Za-z0-9\s]+$/);;
-    const streetAddrIsValid = streetAddrTrimmed.length != 0 && streetAddrTrimmed.match(/^[A-Za-z0-9\s]+$/);; 
-    const aptNoIsValid = aptNoTrimmed.length != 0 && aptNoTrimmed.match(/^[A-Za-z0-9\s]+$/);;
-    const cityIsValid = cityTrimmed.length != 0 && cityTrimmed.match(/^[A-Za-z0-9\s]+$/);;
+    const fNameIsValid =
+      fNameTrimmed.length != 0 && fNameTrimmed.match(/^[A-Za-z0-9\s]+$/);
+    const lNameIsValid =
+      lNameTrimmed.length != 0 && lNameTrimmed.match(/^[A-Za-z0-9\s]+$/);
+    const streetAddrIsValid =
+      streetAddrTrimmed.length != 0 &&
+      streetAddrTrimmed.match(/^[A-Za-z0-9\s]+$/);
+    const aptNoIsValid =
+      aptNoTrimmed.length != 0 && aptNoTrimmed.match(/^[A-Za-z0-9\s]+$/);
+    const cityIsValid =
+      cityTrimmed.length != 0 && cityTrimmed.match(/^[A-Za-z0-9\s]+$/);
 
     setFNameInvalid(!fNameIsValid);
 
     if (!fNameIsValid) {
-      Alert.alert('Invalid Input', 'Enter First Name with no special characters');
+      Alert.alert(
+        'Invalid Input',
+        'Enter First Name with no special characters'
+      );
       return false;
     }
 
     setLNameInvalid(!lNameIsValid);
 
     if (!lNameIsValid) {
-      Alert.alert('Invalid Input', 'Enter Last Name with no special characters');
+      Alert.alert(
+        'Invalid Input',
+        'Enter Last Name with no special characters'
+      );
       return false;
     }
 
@@ -94,14 +112,20 @@ function UserDetailScreen({route}) {
     setStreetAddrInvalid(!streetAddrIsValid);
 
     if (!streetAddrIsValid) {
-      Alert.alert('Invalid Input', 'Enter Street Address with no special characters');
+      Alert.alert(
+        'Invalid Input',
+        'Enter Street Address with no special characters'
+      );
       return false;
     }
 
     setAptNoInvalid(!aptNoIsValid);
 
     if (!aptNoIsValid) {
-      Alert.alert('Invalid Input', 'Enter Apartment No. with no special characters');
+      Alert.alert(
+        'Invalid Input',
+        'Enter Apartment No. with no special characters'
+      );
       return false;
     }
 
@@ -122,29 +146,35 @@ function UserDetailScreen({route}) {
     return true;
   }
   async function updateUser() {
-
-    console.log("in update user");
+    console.log('in update user');
     setIsLoading(true);
     setIsSuccess(false);
     setIsError(false);
-      try{
-        const formattedPhoneNumber = phoneInputRef.current.getValue();
+    try {
+      const formattedPhoneNumber = phoneInputRef.current.getValue();
 
-        console.log('PHONE NUMBER=', formattedPhoneNumber);
+      console.log('PHONE NUMBER=', formattedPhoneNumber);
       const response = await axios.post(
         'http://dev-lb-subscribite-234585004.us-west-2.elb.amazonaws.com/users/updateInfo',
         {
           first_name: firstName.trim(),
           last_name: lastName.trim(),
           phone_number: formattedPhoneNumber.trim(),
-          user_id: 163,
-          address: apartmentNumber.trim() + ", " + streetAddress.trim() + ", "  + city.trim() + ", " + zipCode.trim(),
+          user_id: authCtx.localId,
+          address:
+            apartmentNumber.trim() +
+            ', ' +
+            streetAddress.trim() +
+            ', ' +
+            city.trim() +
+            ', ' +
+            zipCode.trim(),
         }
       );
       console.log('Status:', response.data);
       setIsSuccess(true);
       Alert.alert('Success', 'Profile updated!');
-      navigation.replace('Account1');      
+      navigation.replace('Account1');
     } catch (error) {
       console.error('Error:', error);
       setIsError(true);
@@ -153,136 +183,143 @@ function UserDetailScreen({route}) {
     }
   }
 
-
   async function handleSubmit() {
+    // this is the first time screen that comes up
     const isValid = validate();
 
-
     if (isValid) {
+      console.log('id=', userDetails[0].id);
+      if (!(userDetails[0].id == '')) {
+        updateUser();
+      } else {
+        console.log('in insert user');
+        setIsLoading(true);
+        setIsSuccess(false);
+        setIsError(false);
 
-      console.log("id=",userDetails[0].id)
-      if(!(userDetails[0].id == "")){
-          updateUser();
-      }
-      else{
-      console.log("in insert user");
-      setIsLoading(true);
-      setIsSuccess(false);
-      setIsError(false);
+        try {
+          const formattedPhoneNumber = phoneInputRef.current.getValue();
 
-      try {
-        const formattedPhoneNumber = phoneInputRef.current.getValue();
+          console.log('PHONE NUMBER=', formattedPhoneNumber);
 
-        console.log('PHONE NUMBER=', formattedPhoneNumber);
+          const response = await axios.post(
+            'http://dev-lb-subscribite-234585004.us-west-2.elb.amazonaws.com/users/updateInfo',
+            {
+              first_name: firstName.trim(),
+              last_name: lastName.trim(),
+              phone_number: formattedPhoneNumber.trim(),
+              user_id: authCtx.localId,
+              address:
+                apartmentNumber +
+                ', ' +
+                streetAddress +
+                ', ' +
+                +city +
+                ', ' +
+                zipCode,
+            }
+          );
+          console.log('Status:', response.data);
 
-        const response = await axios.post(
-          'http://dev-lb-subscribite-234585004.us-west-2.elb.amazonaws.com/register',
-          {
-            firstname: firstName.trim(),
-            lastname: lastName.trim(),
-            phone_number: formattedPhoneNumber.trim(),
-            // user_id: 163,
-            // address: apartmentNumber + ", " + streetAddress + ", " +  + city + ", " + zipCode,
-          }
-        );
-        console.log('Status:', response.data);
-        setIsSuccess(true);
-        //after success, I want to store the name of the user in the React Store and also set the user as a registered user
-        authCtx.setUserDetails(firstName);
-        authCtx.setRegisteredUser(true);
-        //then I want to have a 1.5 second timeout before navigating to the Home page
-        setTimeout(() => {
-          navigation.replace('HomeScreenStack');
-        }, 1500);
-      } catch (error) {
-        console.error('Error:', error);
-        setIsError(true);
-      } finally {
-        setIsLoading(false);
+          //after success, I want to store the name of the user in the React Store and also set the user as a registered user
+          authCtx.setUserDetails(firstName);
+          console.log('Setting user as registered');
+          authCtx.setRegisteredUser(true);
+          //then I want to have a 1.5 second timeout before navigating to the Home page
+          setTimeout(() => {
+            navigation.replace('HomeScreenStack');
+          }, 1500);
+          setIsSuccess(true);
+        } catch (error) {
+          console.error('Error:', error);
+          setIsError(true);
+        } finally {
+          setIsLoading(false);
+        }
       }
     }
-    }
 
-    console.log("In user detail screen");
+    console.log('In user detail screen');
   }
-    return (
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      >
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <View style={styles.authContent}>
-            <View style={styles.form}>
-              <View>
-                <Input
-                  label='First Name'
-                  onUpdateValue={setFirstName}
-                  value={firstName}
-                  isInvalid={fNameIsInvalid}
+
+  const handleLayout = () => {
+    // fetchItems ? null : setFilteredItems(itemsList);
+    // SplashScreen.hideAsync();
+  };
+  return (
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.authContent} onLayout={handleLayout}>
+          <View style={styles.form}>
+            <View>
+              <Input
+                label='First Name'
+                onUpdateValue={setFirstName}
+                value={firstName}
+                isInvalid={fNameIsInvalid}
+              />
+              <Input
+                label='Last Name'
+                onUpdateValue={setLastName}
+                value={lastName}
+                isInvalid={lNameIsInvalid}
+              />
+              <View style={styles.inputContainer}>
+                <Text
+                  style={[styles.label, phnNoIsInvalid && styles.labelInvalid]}
+                >
+                  Phone No.
+                </Text>
+                <PhoneInput
+                  style={[
+                    styles.phoneInput,
+                    phnNoIsInvalid && styles.inputInvalid,
+                  ]}
+                  ref={phoneInputRef}
+                  initialCountry='us'
+                  withShadow
+                  autoFocus
                 />
-                <Input
-                  label='Last Name'
-                  onUpdateValue={setLastName}
-                  value={lastName}
-                  isInvalid={lNameIsInvalid}
-                />
-                <View style={styles.inputContainer}>
-                  <Text
-                    style={[
-                      styles.label,
-                      phnNoIsInvalid && styles.labelInvalid,
-                    ]}
-                  >
-                    Phone No.
-                  </Text>
-                  <PhoneInput
-                    style={[
-                      styles.phoneInput,
-                      phnNoIsInvalid && styles.inputInvalid,
-                    ]}
-                    ref={phoneInputRef}
-                    initialCountry='us'
-                    withShadow
-                    autoFocus
-                  />
-                </View>
-                <Input
-                  label='Street Address'
-                  onUpdateValue={setStreetAddress}
-                  value={streetAddress}
-                  isInvalid={streetAddrIsInvalid}
-                />
-                <Input
-                  label='Apartment No.'
-                  onUpdateValue={setApartmentNumber}
-                  value={apartmentNumber}
-                  isInvalid={aptNoIsInvalid}
-                />
-                <Input
-                  label='City'
-                  onUpdateValue={setCity}
-                  value={city}
-                  isInvalid={cityIsInvalid}
-                />
-                <Input
-                  keyboardType='numeric'
-                  label='Zip Code'
-                  onUpdateValue={setZipCode}
-                  value={zipCode}
-                  isInvalid={zipCodeIsInvalid}
-                />
-                <View style={styles.buttons}>
-                  <Button onPress={handleSubmit}>{'Submit'}</Button>
-                </View>
-                {isLoading && <Text>Loading...</Text>}
-                {isSuccess && <Text style={{ color: 'green' }}>Success!</Text>}
-                {isError && <Text style={{ color: 'red' }}>Error!</Text>}
               </View>
+              <Input
+                label='Street Address'
+                onUpdateValue={setStreetAddress}
+                value={streetAddress}
+                isInvalid={streetAddrIsInvalid}
+              />
+              <Input
+                label='Apartment No.'
+                onUpdateValue={setApartmentNumber}
+                value={apartmentNumber}
+                isInvalid={aptNoIsInvalid}
+              />
+              <Input
+                label='City'
+                onUpdateValue={setCity}
+                value={city}
+                isInvalid={cityIsInvalid}
+              />
+              <Input
+                keyboardType='numeric'
+                label='Zip Code'
+                onUpdateValue={setZipCode}
+                value={zipCode}
+                isInvalid={zipCodeIsInvalid}
+              />
+              <View style={styles.buttons}>
+                <Button onPress={handleSubmit}>{'Submit'}</Button>
+              </View>
+              {isLoading && <Text>Loading...</Text>}
+              {isSuccess && <Text style={{ color: 'green' }}>Success!</Text>}
+              {isError && <Text style={{ color: 'red' }}>Error!</Text>}
             </View>
           </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    );
-  
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
+  );
 }
 export default UserDetailScreen;
 

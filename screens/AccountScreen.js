@@ -1,6 +1,13 @@
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, Image } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  TouchableOpacity,
+  Image,
+} from 'react-native';
 import { AuthContext } from '../store/auth-context';
-import { useContext , useState, useEffect} from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import SuggestProductScreen from './SuggestProductScreen';
 import ContactScreen from './ContactScreen';
@@ -19,95 +26,98 @@ const accountOptions = [
   // },
   // {
   //   key: "2",
-	//   text: "Manage Address",
+  //   text: "Manage Address",
   //   icon: "map-marker"
   // },
   {
-	  key: "3",
-	  text: "My Subscriptions",
-    icon: "calendar-month"
+    key: '3',
+    text: 'My Subscriptions',
+    icon: 'calendar-month',
   },
   {
-	  key: "4",
-	  text: "Orders",
-    icon: "cart"
+    key: '4',
+    text: 'Orders',
+    icon: 'cart',
   },
   {
-	  key: "5",
-	  text: "Manage Notifications",
-    icon: "bell"
+    key: '5',
+    text: 'Manage Notifications',
+    icon: 'bell',
   },
   {
-	  key: "6",
-	  text: "Payments",
-    icon: "currency-usd"
+    key: '6',
+    text: 'Payments',
+    icon: 'currency-usd',
   },
   {
-	  key: "7",
-	  text: "Suggest a product",
-    icon: "lightbulb-on-outline"
+    key: '7',
+    text: 'Suggest a product',
+    icon: 'lightbulb-on-outline',
   },
   {
-	  key: "8",
-	  text: "Help / Contact Us",
-    icon: "help-circle-outline"
-  }
+    key: '8',
+    text: 'Help / Contact Us',
+    icon: 'help-circle-outline',
+  },
 ];
 
 const myItemSeparator = () => {
-  return <View style={{ height: 2, backgroundColor: "grey", marginHorizontal:0}} />;
-  };
+  return (
+    <View style={{ height: 2, backgroundColor: 'grey', marginHorizontal: 0 }} />
+  );
+};
 
 const Stack = createNativeStackNavigator();
 
-function AccountScreen({navigation}) {
-   
-   const authCtx = useContext(AuthContext);
-   const name = authCtx.name;
-   const navigation1 = useNavigation();
-   const [userDetails, setUserDetails] = useState([{
-    "id": "",
-    "firstname": "Hello",
-    "lastname": "User",
-    "phone_number": "",
-    "email_address": "",
-    "address": ""
-   }]);
+function AccountScreen({ navigation }) {
+  const authCtx = useContext(AuthContext);
+  const name = authCtx.name;
+  const navigation1 = useNavigation();
+  const [userDetails, setUserDetails] = useState([
+    {
+      id: '',
+      firstname: 'Hello',
+      lastname: 'User',
+      phone_number: '',
+      email_address: '',
+      address: '',
+    },
+  ]);
 
-   useEffect(() => {
-     // Fetch user details from the API
-     const fetchUserDetails = async () => {
-       try {
-          const getUserReq = {
-            user_id: 163
-          };
-         const response = await axios.post('http://dev-lb-subscribite-234585004.us-west-2.elb.amazonaws.com/users',
-         getUserReq,
-         {
-           headers: {
-             'Content-Type': 'application/json',
-           },
-         });
-         console.log("user data:",response.data);
-         setUserDetails(response.data);
-         console.log("user name:",userDetails[0].firstname);
-       } catch (error) {
-         console.error('Error fetching user details:', error);
-       }
-     };
- 
-     fetchUserDetails();
-   }, []);
+  useEffect(() => {
+    // Fetch user details from the API
+    const fetchUserDetails = async () => {
+      try {
+        const getUserReq = {
+          user_id: authCtx.localId,
+        };
+        const response = await axios.post(
+          'http://dev-lb-subscribite-234585004.us-west-2.elb.amazonaws.com/users',
+          getUserReq,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+        console.log('user data:', response.data);
+        setUserDetails(response.data);
+        console.log('user name:', userDetails[0].firstname);
+      } catch (error) {
+        console.error('Error fetching user details:', error);
+      }
+    };
 
-   const handleItemPress = (item) => {
+    fetchUserDetails();
+  }, []);
+
+  const handleItemPress = (item) => {
     // Navigate to the desired screen based on the item's key or text
-    if (item.key === "7") {
+    if (item.key === '7') {
       navigation.navigate('Suggest a Product');
-    } 
-    else if (item.key === "3") {
+    } else if (item.key === '3') {
       navigation.navigate('My Subscriptions');
-    }
-    else if (item.key === "8") {
+    } else if (item.key === '8') {
       navigation.navigate('Help / Contact Us');
     }
     // Add more conditions for other screens
@@ -120,76 +130,91 @@ function AccountScreen({navigation}) {
 
   return (
     <View style={styles.container}>
-       <View style={styles.profileContainer}>
+      <View style={styles.profileContainer}>
         <View style={styles.profileImageContainer}>
-        <Image
+          <Image
             source={require('../assets/icon.png')}
             style={styles.profileImage}
           />
         </View>
         <View style={styles.profileDetails}>
-        <View style={styles.profileHeader}>
-             <Text style={styles.profileNameText}>{userDetails[0].firstname + " " + userDetails[0].lastname}</Text>
-             <View style={styles.editButtonContainer}>
+          <View style={styles.profileHeader}>
+            <Text style={styles.profileNameText}>
+              {userDetails[0].firstname + ' ' + userDetails[0].lastname}
+            </Text>
+            <View style={styles.editButtonContainer}>
               <TouchableOpacity onPress={handleEditProfile}>
-               <MaterialCommunityIcons name="pencil" size={24} color="black" />
-             </TouchableOpacity>
-             </View>
-           </View>
+                <MaterialCommunityIcons name='pencil' size={24} color='black' />
+              </TouchableOpacity>
+            </View>
+          </View>
           <Text style={styles.profileText}>{userDetails[0].phone_number}</Text>
           <Text style={styles.profileText}>{userDetails[0].email_address}</Text>
         </View>
       </View>
-      
+
       <View style={styles.deliveryAddressContainer}>
         <Text style={styles.sectionHeading}>Delivery Address</Text>
         <Text style={styles.addressText}>{userDetails[0].address}</Text>
       </View>
 
-      <View style={styles.listContainer}>  
-      <FlatList 
-        data = {accountOptions}
-        renderItem = {({ item }) => (
-          <TouchableOpacity onPress={() => handleItemPress(item)}>
-            <View style={styles.listOptions}>
-            <MaterialCommunityIcons name={item.icon} size={32} color="black" />
-            <Text style={styles.listText}>{item.text}</Text>
-            </View>
-          </TouchableOpacity>
+      <View style={styles.listContainer}>
+        <FlatList
+          data={accountOptions}
+          renderItem={({ item }) => (
+            <TouchableOpacity onPress={() => handleItemPress(item)}>
+              <View style={styles.listOptions}>
+                <MaterialCommunityIcons
+                  name={item.icon}
+                  size={32}
+                  color='black'
+                />
+                <Text style={styles.listText}>{item.text}</Text>
+              </View>
+            </TouchableOpacity>
           )}
-        ItemSeparatorComponent={myItemSeparator}
-        alwaysBounceVertical = {false}
-      />
+          ItemSeparatorComponent={myItemSeparator}
+          alwaysBounceVertical={false}
+        />
+      </View>
     </View>
-    </View>
-  
   );
 }
 
-function AccountStack({navigation}) {
+function AccountStack({ navigation }) {
+  const authCtx = useContext(AuthContext);
 
   return (
     <Stack.Navigator>
-      <Stack.Screen 
-     options={{ headerShown: false }}
-      name="Account1" component={AccountScreen} 
+      <Stack.Screen
+        options={{ headerShown: false }}
+        name='Account1'
+        component={AccountScreen}
       />
-      <Stack.Screen 
-      //options={{ headerShown: false }}
-      name="Suggest a Product" component={SuggestProductScreen} />
-      <Stack.Screen 
-      //options={{ headerShown: false }}
-      name="My Subscriptions" component={MySubscriptionScreen} 
-      initialParams={{
-        api: 'http://dev-lb-subscribite-234585004.us-west-2.elb.amazonaws.com',
-        userId: 163, //TODO: make userid dynamic
-      }}/>
-       <Stack.Screen 
-      //options={{ headerShown: false }}
-      name="Help / Contact Us" component={ContactScreen} />
-       <Stack.Screen 
-      options={{ headerShown: false }}
-      name="Edit Profile" component={UserDetailScreen} />
+      <Stack.Screen
+        //options={{ headerShown: false }}
+        name='Suggest a Product'
+        component={SuggestProductScreen}
+      />
+      <Stack.Screen
+        //options={{ headerShown: false }}
+        name='My Subscriptions'
+        component={MySubscriptionScreen}
+        initialParams={{
+          api: 'http://dev-lb-subscribite-234585004.us-west-2.elb.amazonaws.com',
+          userId: authCtx.localId, //TODO: make userid dynamic
+        }}
+      />
+      <Stack.Screen
+        //options={{ headerShown: false }}
+        name='Help / Contact Us'
+        component={ContactScreen}
+      />
+      <Stack.Screen
+        options={{ headerShown: false }}
+        name='Edit Profile'
+        component={UserDetailScreen}
+      />
       {/* Add more screens to the account stack */}
     </Stack.Navigator>
   );
@@ -216,7 +241,7 @@ const styles = StyleSheet.create({
   listOptions: {
     fontSize: 18,
     marginTop: 6,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     paddingVertical: 15,
     paddingHorizontal: 15,
     flexDirection: 'row',
@@ -231,11 +256,11 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: 'white',
     width: '100%',
-    padding : 15
+    padding: 15,
   },
   profileImageContainer: {
     width: 80,
-    height:80,
+    height: 80,
     borderRadius: 40,
     backgroundColor: 'black',
     marginRight: 15,
@@ -266,7 +291,7 @@ const styles = StyleSheet.create({
     marginBottom: 1,
   },
   deliveryAddressContainer: {
-    width: "100%",
+    width: '100%',
     borderWidth: 1,
     borderColor: 'gray',
     borderRadius: 5,
@@ -293,5 +318,4 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  
 });

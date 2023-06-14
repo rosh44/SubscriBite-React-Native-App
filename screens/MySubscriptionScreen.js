@@ -14,7 +14,7 @@ function MySubscriptionScreen() {
   useEffect(() => {
     // console.log('In home screen use efect');
     async function getItemsFromBackend() {
-      const itemlist = await ImportSubscriptions();
+      const itemlist = await ImportSubscriptions(authCtx.localId);
       // console.log(`=======> ${itemlist[0]}`);
       setFilteredItems(itemlist);
     }
@@ -75,7 +75,7 @@ function MySubscriptionScreen() {
 
   async function handleConfirm() {
     const upd_subscription_request = {
-      user_id: 163,
+      user_id: authCtx.localId,
       sub_id: selectedItem.subs_id,
       item_id: selectedItem.id,
       sub_start_date: new Date(fromDate).toISOString().slice(0, 10),
@@ -96,7 +96,7 @@ function MySubscriptionScreen() {
         }
       );
       console.log('update subs res:', response.data);
-      const itemlist = await ImportSubscriptions();
+      const itemlist = await ImportSubscriptions(authCtx.localId);
       setFilteredItems(itemlist);
       cartCtx.changeRefreshItem(); // to ensure calendar screen calls api again
       Alert.alert('Success', 'Subscription updated!');
@@ -124,7 +124,7 @@ function MySubscriptionScreen() {
         }
       );
       console.log('DELETED', response.data);
-      const itemlist = await ImportSubscriptions();
+      const itemlist = await ImportSubscriptions(authCtx.localId);
       setFilteredItems(itemlist);
       cartCtx.changeRefreshItem(); // to ensure calendar screen calls api again
       // remove from store to ensure home screen does not display item (if there are more subscriptions, it should not remove them though)
