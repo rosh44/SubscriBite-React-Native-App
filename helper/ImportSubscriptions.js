@@ -1,14 +1,16 @@
 import axios from 'axios';
 //import dummyItemsList from './dummyItemsList';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+
 export let itemsList = [];
-const ImportSubscriptions = async () => {
+const ImportSubscriptions = async (localId) => {
   let items = [];
-  console.log('Importing items...');
+  console.log('Importing items for ', localId);
+  // const authCtx = useContext(AuthContext);
   const url =
     'http://dev-lb-subscribite-234585004.us-west-2.elb.amazonaws.com/subscriptions/getSubscriptions';
   const request_data = {
-    user_id: 163,
+    user_id: localId,
   };
 
   try {
@@ -17,7 +19,7 @@ const ImportSubscriptions = async () => {
         'Content-Type': 'application/json',
       },
     });
-    // console.log('Response received');
+    console.log('Get subscriptions response received');
     items = response.data.map((item) => ({
       subs_id: item.subscription_id,
       id: item.item_id,
@@ -31,8 +33,8 @@ const ImportSubscriptions = async () => {
       time_slot_id: item.time_slot_id,
     }));
     // console.log(items);
-     // Sort the items by itemid and frequency
-     items.sort((a, b) => {
+    // Sort the items by itemid and frequency
+    items.sort((a, b) => {
       if (a.id < b.id) {
         return -1;
       } else if (a.id > b.id) {

@@ -14,7 +14,12 @@ function LoginScreen() {
     //to show some spinner while authentication is on
     setIsAuthenticating(true);
     try {
-      const { token, localId } = await login(email, password); //returns a promise
+      let { token, localId } = await login(email, password); //returns a promise
+      const numericString = localId.replace(/\D/g, '');
+      const numericId =
+        numericString !== '' ? parseInt(numericString, 10) : 100;
+      console.log(`Numeric ID from loginHandler: ${numericId}`);
+      localId = numericId;
       authCtx.authenticate({ token, localId });
     } catch (error) {
       console.log(error);

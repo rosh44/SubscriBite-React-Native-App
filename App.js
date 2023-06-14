@@ -19,6 +19,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import IconButton from './components/ui/IconButton';
 import * as SplashScreen from 'expo-splash-screen';
+import axios from 'axios';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -68,7 +69,7 @@ const BottomTabNavigation = ({ navigation }) => {
         component={CalendarScreen}
         initialParams={{
           api: 'http://dev-lb-subscribite-234585004.us-west-2.elb.amazonaws.com',
-          userId: 163,
+          userId: authCtx.localId,
         }}
         options={{
           tabBarIcon: ({ color, size }) => (
@@ -129,26 +130,64 @@ function AuthenticatedStack() {
   //this is the stuff that is displayed after the user is authenticated
   // we do not need to show login screens and all once this is done
   // you only render this Navigator if a certain condition is met (ie logged in user)
+
+  // Now here what I want to do, is to call backend with this localId that I have and check if the user is registered or not.
+
   const authCtx = useContext(AuthContext);
   const navigation = useNavigation();
   useEffect(() => {
-    // console.log('Am in use Effect');
-    async function fetchRegistered() {
-      const isRegistered = await AsyncStorage.getItem('registered');
-      //isRegistered = false;
-      if (isRegistered) {
-        // that means token is on device, hence user is already logged in
-        // so set the auth context
-        // console.log(`Token is stored as ${storedToken}`);
-        // console.log(`ID is stored as ${localId}`);
+    console.log(
+      `Am in Authenicated Stack Use Effect: Before everything, isRegistered is: ${authCtx.isRegistered}`
+    );
+    console.log(`and authCtx.localId is: ${authCtx.localId}`);
 
+    async function fetchRegistered() {
+      console.log(
+        'Now I am going to fetch the registration status from backend...'
+      );
+      let localId = authCtx.localId;
+      // by default let us set an isRegistered to false
+      let isRegistered = false;
+      try {
+        console.log(`Sending user id to register/: ${localId}`);
+        let res = await axios.post(
+          'http://dev-lb-subscribite-234585004.us-west-2.elb.amazonaws.com/isRegistered',
+          {
+            user_id: localId,
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+        console.log(
+          `Backend registration check: User registration status is --> ${JSON.stringify(
+            res.data
+          )}`
+        );
+        isRegistered = res.data;
+      } catch (error) {
+        console.log('IsRegistered checking had an error');
+        console.log(error);
+      }
+      if (isRegistered) {
+        // we came to know that the user is Registered after backend call
+        console.log(
+          'Setting isRegistered as trues to make sure I can set registration status.'
+        );
         authCtx.setRegisteredUser(true);
       }
+      console.log('End of Authenticated Stack use Effect');
     }
-    authCtx.setRegisteredUser(true);
+    // authCtx.setRegisteredUser(true);
 
-    fetchRegistered();
-  }, []);
+    try {
+      authCtx.localId && fetchRegistered();
+    } catch (e) {
+      console.log('Effect error');
+    }
+  }, [authCtx.localId]);
 
   const RenderHomeScreenStack = () => (
     <HomeScreenStack navigation={navigation} />
@@ -166,14 +205,18 @@ function AuthenticatedStack() {
         <Stack.Screen
           name='Profile Details'
           component={UserDetailScreen}
-          initialParams={{ userDetails: [{
-            "id": "",
-            "firstname": "",
-            "lastname": "",
-            "phone_number": "",
-            "email_address": "",
-            "address": ""
-           }]}}
+          initialParams={{
+            userDetails: [
+              {
+                id: '',
+                firstname: '',
+                lastname: '',
+                phone_number: '',
+                email_address: '',
+                address: '',
+              },
+            ],
+          }}
           // options={{
           //   headerRight: ({ tintColor }) => {
           //     <IconButton
@@ -200,9 +243,12 @@ function AuthenticatedStack() {
 }
 
 function Navigation() {
-  // now we can use useContext() to tap into the context part
   const authCtx = useContext(AuthContext);
-
+  // now we can use useContext() to tap into the context part
+  // this runs after Root (if user is logged in, then token is present on device, and now also in authCtx)
+  console.log(`In Navigation, authenticated is: ${authCtx.isAuthenticated}`);
+  // authCtx.isAuthenicated is the truthy or falsy based on if authCtx.token exists or not.
+  // one of the 2 Navigations Stacks is shown according to this value.
   return (
     <NavigationContainer>
       {!authCtx.isAuthenticated && <AuthStack />}
@@ -217,24 +263,37 @@ function Root() {
   const authCtx = useContext(AuthContext);
 
   useEffect(() => {
-    // console.log('Am in use Effect');
+    console.log('Am in root Effect');
 
     async function fetchToken() {
-      const storedToken = await AsyncStorage.getItem('token');
-      const localId = await AsyncStorage.getItem('localId');
+      try {
+        const token = await AsyncStorage.getItem('token');
+        let localId = await AsyncStorage.getItem('localId');
+        console.log(token);
+        localId = parseInt(localId, 10);
+        console.log(localId);
 
-      if (storedToken) {
-        // that means token is on device, hence user is already logged in
-        // so set the auth context
-        // console.log(`Token is stored as ${storedToken}`);
-        // console.log(`ID is stored as ${localId}`);
-
-        authCtx.authenticate({ token: storedToken, localId });
-        setIsTryingLogin(false); // whether logged in or not, we are done trying to check if login
+        if (token) {
+          // that means token is on device, hence user is already logged in
+          // so set the auth context
+          // console.log(`Token is stored as ${storedToken}`);
+          // console.log(`ID is stored as ${localId}`);
+          console.log(
+            `In Root --> with token and localId as: ${(token, localId)}`
+          );
+          authCtx.authenticate({ token, localId });
+          setIsTryingLogin(false); // whether logged in or not, we are done trying to check if login
+        } else {
+          console.log('Not logged in as token is not on device.');
+        }
+      } catch (e) {
+        console.log(e);
       }
     }
 
-    fetchToken();
+    try {
+      fetchToken();
+    } catch (e) {}
   }, []);
 
   return <Navigation />;
