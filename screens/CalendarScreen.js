@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, SafeAreaView } from 'react-native';
+import { View, StyleSheet, SafeAreaView, Text } from 'react-native';
 import { ExpandableCalendar, CalendarProvider } from 'react-native-calendars';
 import { AuthContext } from '../store/auth-context';
 import { useContext } from 'react';
@@ -87,6 +87,7 @@ function CalendarScreen({ route }) {
   return (
     <View style={styles.mainContainer}>
       <View style={styles.calendarContainer}>
+    
         <CalendarProvider
           date={selectedDate}
           disabledOpacity={0.6}
@@ -104,6 +105,13 @@ function CalendarScreen({ route }) {
             markedDates={markedDates}
           />
         </CalendarProvider>
+      </View>
+      <View style={styles.container}>
+        <Text style={styles.updateText}>
+          {' '}
+          The changes made on this page will only update the subscription for a particular day
+          {' '}
+        </Text>
       </View>
       <View style={styles.listContainer}>
         <SubscriptionList
@@ -124,4 +132,10 @@ const styles = StyleSheet.create({
   calendarContainer: { flexDirection: 'column', flex: 2 },
   listContainer: { flex: 8 },
   mainContainer: { flex: 1 },
+  updateText: {
+    fontSize: 13,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    padding: 7
+  },
 });

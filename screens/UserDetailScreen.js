@@ -36,16 +36,27 @@ function UserDetailScreen({ route }) {
     }
   }, [userDetails]);
 
-  const splitAddr = userDetails[0].address.split(',');
-  console.log(splitAddr);
+  var streetAddr = '';
+  var aptNo = '';
+  var zip = '';
+  var cityName = '';
+
+  if(!(userDetails[0].address == null)){
+    const splitAddr = userDetails[0].address.split(',');
+    console.log(splitAddr);
+    streetAddr = splitAddr[1];
+    aptNo = splitAddr[0];
+    cityName = splitAddr[2];
+    zip = splitAddr[3];
+  }
 
   const [firstName, setFirstName] = useState(userDetails[0].firstname);
   const [lastName, setLastName] = useState(userDetails[0].lastname);
-  const [streetAddress, setStreetAddress] = useState(splitAddr[1]);
-  const [apartmentNumber, setApartmentNumber] = useState(splitAddr[0]);
+  const [streetAddress, setStreetAddress] = useState(streetAddr);
+  const [apartmentNumber, setApartmentNumber] = useState(aptNo);
 
-  const [zipCode, setZipCode] = useState(splitAddr[3]);
-  const [city, setCity] = useState(splitAddr[2]);
+  const [zipCode, setZipCode] = useState(zip);
+  const [city, setCity] = useState(cityName);
 
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -326,7 +337,7 @@ export default UserDetailScreen;
 const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
-    paddingBottom: 30,
+    paddingBottom: 250,
   },
   inputContainer: {
     marginVertical: 8,
