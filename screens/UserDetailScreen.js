@@ -71,13 +71,22 @@ function UserDetailScreen({ route }) {
   const [zipCodeIsInvalid, setZipCodeInvalid] = useState(false);
 
   function validate() {
-    const phoneNumber = phoneInputRef.current.getValue().trim();
-    const zipCodeTrimmed = zipCode.trim();
-    const fNameTrimmed = firstName.trim();
-    const lNameTrimmed = lastName.trim();
-    const streetAddrTrimmed = streetAddress.trim();
-    const aptNoTrimmed = apartmentNumber.trim();
-    const cityTrimmed = city.trim();
+
+    // const phoneNumber = phoneInputRef.current.getValue().trim();
+    // const zipCodeTrimmed = zipCode.trim();
+    // const fNameTrimmed = firstName.trim();
+    // const lNameTrimmed = lastName.trim();
+    // const streetAddrTrimmed = streetAddress.trim();
+    // const aptNoTrimmed = apartmentNumber.trim();
+    // const cityTrimmed = city.trim();
+
+    const phoneNumber = phoneInputRef.current?.getValue()?.trim() || '';
+    const zipCodeTrimmed = zipCode?.trim() || '';
+    const fNameTrimmed = firstName?.trim() || '';
+    const lNameTrimmed = lastName?.trim() || '';
+    const streetAddrTrimmed = streetAddress?.trim() || '';
+    const aptNoTrimmed = apartmentNumber?.trim() || '';
+    const cityTrimmed = city?.trim() || '';
 
     const phnNoIsValid = /^\+?[0-9]{10,13}$/.test(phoneNumber);
     const zipCodeIsValid = zipCodeTrimmed.match(/^[0-9]+$/);
@@ -225,7 +234,7 @@ function UserDetailScreen({ route }) {
                 ', ' +
                 streetAddress +
                 ', ' +
-                +city +
+                city +
                 ', ' +
                 zipCode,
             }
