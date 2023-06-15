@@ -10,11 +10,15 @@ function FilterBar({ selectedFilter, handleCategoryPress }) {
   const categoryData = [
     { name: 'Dairy', filter: 'dairy' },
     { name: 'Fruits', filter: 'fruit' },
-    { name: 'Poultry', filter: 'poultry' },
-    { name: 'Vegan', filter: 'vegan' },
-    { name: 'Dessert', filter: 'dessert' },
+    { name: 'Vegetables', filter: 'vegetable' },
+    { name: 'Beverages', filter: 'beverage' },
+    { name: 'Meat', filter: 'meat' },
+    { name: 'Pantry', filter: 'pantry' },
     { name: 'Bakery', filter: 'bakery' },
-    { name: 'Medicines', filter: 'medicine' },
+    { name: 'Sea Food', filter: 'seafood' },
+    { name: 'Breakfast', filter: 'breakfast' },
+    { name: 'Condiments', filter: 'condiment' },
+    { name: 'Poultry', filter: 'poultry' },
 
     // Add more category items as needed
   ];
