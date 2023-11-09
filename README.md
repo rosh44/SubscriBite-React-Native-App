@@ -6,16 +6,3 @@ npm install
 
 npx expo start
 
-
-
-Following changes are completed:
-
-Login 
-
-Registration
-
-User details page
-
-Icon and splash screen
-
-Bottom Tab navigation
