@@ -1,7 +1,7 @@
 # Subscribite
 
-SubscriBite is a novel grocery delivery application designed to provide consumers with a convenient and efficient solution for their daily and subscription-based grocery needs.
-The app's unique subscription-based delivery model allows users to subscribe to their favorite products and have them delivered on a regular schedule without the need to place a separate order each time. This feature not only saves time and effort for the consumer, but also helps to reduce food waste by ensuring that products are delivered in a timely and appropriate manner. Additionally, users can also place one-time grocery deliveries and choose from fixed time slots that suit their schedule.
+SubscriBite is a novel grocery delivery application designed to provide consumers with a convenient and efficient solution for their daily and subscription-based grocery needs.<br>
+The app's unique subscription-based delivery model allows users to subscribe to their favorite products and have them delivered on a regular schedule without the need to place a separate order each time. This feature not only saves time and effort for the consumer, but also helps to reduce food waste by ensuring that products are delivered in a timely and appropriate manner. Additionally, users can also place one-time grocery deliveries and choose from fixed time slots that suit their schedule.<br>
 The app also includes a feature that allows users to suggest products for inclusion in the inventory. This feature not only caters to the specific needs and preferences of the consumer, but also allows the company to track the sales of products and make data-driven decisions on what products to keep in stock.
 
 ## Features
@@ -23,9 +23,9 @@ The app also includes a feature that allows users to suggest products for inclus
 - Aman Thakkar
 - Eshaan Devgan
 
-[![Product Demo]](https://youtu.be/3NsahPNCTsk?feature=shared "Product Demo - Click to Watch!")
+[!Product Demo](https://youtu.be/3NsahPNCTsk?feature=shared "Product Demo - Click to Watch!")
 
-To run this code, use following commands:
-npm install
-npx expo start
+To run this code, use the following commands:
+- npm install
+- npx expo start
 
