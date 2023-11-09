@@ -23,7 +23,7 @@ The app also includes a feature that allows users to suggest products for inclus
 - Aman Thakkar
 - Eshaan Devgan
 
-[!Product Demo](https://youtu.be/3NsahPNCTsk?feature=shared "Product Demo - Click to Watch!")
+[Product Demo](https://youtu.be/3NsahPNCTsk?feature=shared "Product Demo - Click to Watch!")
 
 To run this code, use the following commands:
 - npm install
